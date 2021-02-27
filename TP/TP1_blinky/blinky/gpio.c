@@ -2,16 +2,24 @@
 #include <gpio.h>
 #include <main.h>
 
+
+
+// TASK 1,4 : opendrain : OTy = 1, floating : PUPDRy = 00
+// TASK 2 : opendrain : OTy = 1, pull-up  : PUPDRy = 01
 void gpio_config_output_opendrain(GPIO_TypeDef *port, unsigned int pin)
 {
     // Output type open-drain : OTy = 1
     port->OTYPER |= (1 << pin);
 
-    // Output data low : ODRy = 0
-    port->ODR &= ~(1 << pin);
+    // Output data low : ODRy = 0s
+    port->ODR &= ~(0 << pin);
 
     // Floating, no pull-up/down : PUPDRy = 00
-    port->PUPDR &= ~(3 << (pin * 2));
+//    port->PUPDR &= ~(3 << (pin * 2)); //TASK 1,4
+//    port->PUPDR |= (1 << (pin * 2)); //TASK 2
+    port->PUPDR |= (1 << (pin * 2)); //TASK 2
+
+
 
     // Output speed highest : OSPEEDRy = 11
     port->OSPEEDR |= (3 << (pin * 2));

@@ -17,6 +17,15 @@ WARNING : Not on the same port !!
 #define FRONT_LED	GPIOD, 14
 #define BODY_LED	GPIOB, 2
 
-#define LED_USED	LED7
+//TASK 1 ---------
+//#define LED_USED	LED7
+
+//TASK 2 ---------
+//#define LED_USED	FRONT_LED
+
+//TASK 3 ---------
+#define LED_USED	BODY_LED
+
+
 
 #endif /* MAIN_H_ */
