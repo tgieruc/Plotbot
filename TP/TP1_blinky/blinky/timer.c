@@ -1,9 +1,9 @@
 #include <stm32f4xx.h>
 #include <gpio.h>
 
-#define TIMER_CLOCK 0    	// TODO: configure APB1 clock
-#define PRESCALER   0       // TODO: configure timer frequency
-#define COUNTER_MAX 0       // TODO: configure timer max counter
+#define TIMER_CLOCK 42e6    	// TODO: check with corrigé
+#define PRESCALER   1e4       //
+#define COUNTER_MAX 8400      //
 
 void timer7_start(void)
 {
@@ -36,7 +36,7 @@ void TIM7_IRQHandler(void)
     */
 
     /* do something ... */
-
+	gpio_toggle(GPIOD, 11);
     // Clear interrupt flag
     TIM7->SR &= ~TIM_SR_UIF;
     TIM7->SR;	// Read back in order to ensure the effective IF clearing
