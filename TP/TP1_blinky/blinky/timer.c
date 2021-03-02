@@ -1,9 +1,9 @@
 #include <stm32f4xx.h>
 #include <gpio.h>
 
-#define TIMER_CLOCK 42e6    	// TODO: check with corrigé
-#define PRESCALER   1e4       //
-#define COUNTER_MAX 8400      //
+#define TIMER_CLOCK 84e6    	// APB1 Clock
+#define PRESCALER   (TIMER_CLOCK/10000)       // timer frequency : 10kHz
+#define COUNTER_MAX 10000 //1Hz
 
 void timer7_start(void)
 {

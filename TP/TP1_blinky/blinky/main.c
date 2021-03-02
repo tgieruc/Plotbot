@@ -3,6 +3,9 @@
 #include <gpio.h>
 #include <main.h>
 #include <timer.h>
+#include <selector.h>
+#include <stdbool.h>
+
 
 // Init function required by __libc_init_array
 void _init(void) {}
@@ -15,51 +18,111 @@ int main(void)
     SystemClock_Config();
 
 
-    // Enable GPIOD peripheral clock
-    RCC->AHB1ENR    |= RCC_AHB1ENR_GPIODEN; // TASK 1,2,5
-//    RCC->AHB1ENR    |= RCC_AHB1ENR_GPIOBEN; // TASK 3
-//    RCC->AHB1ENR    |= RCC_AHB1ENR_GPIODEN; // TASK 4
-//    RCC->AHB1ENR    |= RCC_AHB1ENR_GPIOCEN; // TASK 4
+//// TASK 1
+//// Enable GPIOD peripheral clock
+//    RCC->AHB1ENR    |= RCC_AHB1ENR_GPIODEN;
+//// LED used init
+//	gpio_config_output_opendrain_floating(LED7);
+//    gpio_clear(LED7);
+//
+//    while(1){
+//    	gpio_toggle(LED7);
+//    	wait_1sec();
+//    }
+//
+//// END TASK1
 
-    // LED used init
-//    TASK 1,2,3,5  --------------
-    gpio_config_output_opendrain(LED_USED);
-    gpio_clear(LED_USED);
-// 	  -------------------
+//---------------------------------------------------------
 
-//    TASK 4
-//    gpio_config_input(GPIOC,13);
-//    gpio_config_input(GPIOC,14);
-//    gpio_config_input(GPIOC,15);
+//// TASK 2
+//// Enable GPIOD peripheral clock
+//    RCC->AHB1ENR    |= RCC_AHB1ENR_GPIODEN;
+//// LED used init
+//	gpio_config_output_opendrain_pullup(FRONT_LED);
+//    gpio_clear(FRONT_LED);
+//
+//    while(1){
+//    	gpio_toggle(FRONT_LED);
+//    	wait_1sec();
+//    }
+//
+//// END TASK 2
 
+//---------------------------------------------------------
+
+//// TASK 3
+//// Enable GPIOB peripheral clock
+//	RCC->AHB1ENR    |= RCC_AHB1ENR_GPIOBEN;
+//// LED used init
+//	gpio_config_output_pushpull(BODY_LED); // TASK 1
+//	gpio_clear(BODY_LED);
+//
+//	while(1){
+//		gpio_toggle(BODY_LED);
+//		wait_1sec();
+//	}
+//
+//// END TASK 3
+
+//---------------------------------------------------------
+
+//// TASK 4
+//    int selector, old_selector = 0;
+//    bool do_pattern0 = true;
+//// Enable GPIOB + GPIOD peripheral clock
+//    RCC->AHB1ENR    |= RCC_AHB1ENR_GPIODEN | RCC_AHB1ENR_GPIOCEN;
+//// SELECTOR init
+//    init_selector();
+////	LED init
 //    for (unsigned int i = 0; i < sizeof(led_used)/sizeof(led_used[0]); ++i) {
-//        gpio_config_output_opendrain(GPIOD, led_used[i]);
+//        gpio_config_output_opendrain_pullup(GPIOD, led_used[i]);
 //        gpio_set(GPIOD, led_used[i]);
 //    }
+//
+//	while(1){
+//		selector = get_selector();
+//		if (selector != old_selector){
+//			if (do_pattern0) do_pattern0 = false;
+//			else do_pattern0 = true;
+//
+//		    for (unsigned int i = 0; i < sizeof(led_used)/sizeof(led_used[0]); ++i) {
+//		        gpio_set(GPIOD, led_used[i]);
+//		    }
+//			old_selector = selector;
+//		}
+//
+//		if (do_pattern0){
+//			pattern0();
+//		} else {
+//			pattern1();
+//		}
+//	}
+//// END TASK 4
+
+//---------------------------------------------------------
+
+//// TASK 5
+//// Enable GPIOD peripheral clock
+//    RCC->AHB1ENR    |= RCC_AHB1ENR_GPIODEN;
+//// LED used init
+//	gpio_config_output_opendrain_floating(LED7);
+//	gpio_clear(LED7);
+//
+//	timer7_start();
+//
+//	while(1){
+//		;
+//	}
+//
+//// END TASK1
 
 
 
-
-    while (1) {
-//    	TASK  5 6
-    	timer7_start();
-//    	TASK 1,2,3 --------------------------
-//    	gpio_toggle(LED_USED);
-//        for (unsigned int i = 0; i < 168000000/20; ++i){
-//        	;
-//        }
-//		---------------------------------
-
-//		TASK 4 --------------------------
-    	//TODO: task 4 a finir : utilisation GPIOC input p.283 STM32F407 Data Sheet p 11 12 TP
-//    	pattern1();
-//		---------------------------------
-
-
-
-
-    }
 }
+
+
+
+
 
 
 void wait_05sec(){

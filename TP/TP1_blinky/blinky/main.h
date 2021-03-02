@@ -20,13 +20,13 @@ WARNING : Not on the same port !!
 #define BODY_LED	GPIOB, 2
 
 //TASK 1 4 ---------
-#define LED_USED	LED7
+//#define LED_USED	LED7
 
 //TASK 2 ---------
 //#define LED_USED	FRONT_LED
 
 //TASK 3 ---------
-//#define LED_USED	BODY_LED
+#define LED_USED	BODY_LED
 
 
 
