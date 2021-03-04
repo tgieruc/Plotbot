@@ -66,38 +66,38 @@ int main(void)
 
 //---------------------------------------------------------
 
-//// TASK 4
-//    int selector, old_selector = 0;
-//    bool do_pattern0 = true;
-//// Enable GPIOB + GPIOD peripheral clock
-//    RCC->AHB1ENR    |= RCC_AHB1ENR_GPIODEN | RCC_AHB1ENR_GPIOCEN;
-//// SELECTOR init
-//    init_selector();
-////	LED init
-//    for (unsigned int i = 0; i < sizeof(led_used)/sizeof(led_used[0]); ++i) {
-//        gpio_config_output_opendrain_pullup(GPIOD, led_used[i]);
-//        gpio_set(GPIOD, led_used[i]);
-//    }
-//
-//	while(1){
-//		selector = get_selector();
-//		if (selector != old_selector){
-//			if (do_pattern0) do_pattern0 = false;
-//			else do_pattern0 = true;
-//
-//		    for (unsigned int i = 0; i < sizeof(led_used)/sizeof(led_used[0]); ++i) {
-//		        gpio_set(GPIOD, led_used[i]);
-//		    }
-//			old_selector = selector;
-//		}
-//
-//		if (do_pattern0){
-//			pattern0();
-//		} else {
-//			pattern1();
-//		}
-//	}
-//// END TASK 4
+// TASK 4
+    int selector, old_selector = 0;
+    bool do_pattern0 = true;
+// Enable GPIOB + GPIOD peripheral clock
+    RCC->AHB1ENR    |= RCC_AHB1ENR_GPIODEN | RCC_AHB1ENR_GPIOCEN;
+// SELECTOR init
+    init_selector();
+//	LED init
+    for (unsigned int i = 0; i < sizeof(led_used)/sizeof(led_used[0]); ++i) {
+        gpio_config_output_opendrain_pullup(GPIOD, led_used[i]);
+        gpio_set(GPIOD, led_used[i]);
+    }
+
+	while(1){
+		selector = get_selector();
+		if (selector != old_selector){
+			if (do_pattern0) do_pattern0 = false;
+			else do_pattern0 = true;
+
+		    for (unsigned int i = 0; i < sizeof(led_used)/sizeof(led_used[0]); ++i) {
+		        gpio_set(GPIOD, led_used[i]);
+		    }
+			old_selector = selector;
+		}
+
+		if (do_pattern0){
+			pattern0();
+		} else {
+			pattern1();
+		}
+	}
+// END TASK 4
 
 //---------------------------------------------------------
 
