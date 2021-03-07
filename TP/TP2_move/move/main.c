@@ -27,13 +27,21 @@ int main(void)
 {
     SystemClock_Config();
 
-    // Enable GPIOD and GPIOE peripheral clock
-    RCC->AHB1ENR    |= RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIODEN;
+    // Enable GPIOD GPIOB and GPIOE peripheral clock
+    RCC->AHB1ENR    |= RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIODEN | RCC_AHB1ENR_GPIOEEN;
+    gpio_config_output_open_drain_floating(LED7);
+    gpio_set(LED7);
 
-    // TASK 1-11
-    gpio_config_output_af_pushpull(FRONT_LED,2);
-    timer4_start();
-    // ---------
+//    // TASK 1-11
+//    gpio_config_output_af_pushpull(FRONT_LED,2);
+//    timer4_start();
+//    // ---------
+    motor_init();
+    motor_set_position(10,10,13,13);
+    wait_motor_done();
+    motor_set_position(-13,13,13,13);
+    wait_motor_done();
+    motor_set_position(10,10,13,13);
 
 
     while (1) {

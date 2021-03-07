@@ -5,12 +5,14 @@
 #include <motor.h>
 
 #define TIMER_CLOCK         84000000
-#define TIMER_FREQ          100000 // [Hz]
-#define MOTOR_SPEED_LIMIT   13 // [cm/s]
-#define NSTEP_ONE_TURN      1000 // number of step for 1 turn of the motor
-#define NSTEP_ONE_EL_TURN   4  //number of steps to do 1 electrical turn
-#define NB_OF_PHASES        4  //number of phases of the motors
-#define WHEEL_PERIMETER     13 // [cm]
+#define TIMER_FREQ          100000 	// [Hz]
+#define MOTOR_SPEED_LIMIT   13 		// [cm/s]
+#define NSTEP_ONE_TURN      1000 	// number of step for 1 turn of the motor
+#define NSTEP_ONE_EL_TURN   4  		//number of steps to do 1 electrical turn
+#define NB_OF_PHASES        4  		//number of phases of the motors
+#define WHEEL_PERIMETER     13 		// [cm]
+
+
 
 //timers to use for the motors
 #define MOTOR_RIGHT_TIMER       TIM6
@@ -59,10 +61,15 @@ static const uint8_t step_table[NSTEP_ONE_EL_TURN][NB_OF_PHASES] = {
 *   You can declare here static variables which can be used to store the steps counter of the motors
 *   for example. They will be available only for the code of this file.
 */
+int nb_cycle_togo_l;
+int nb_cycle_togo_r;
 
-unsigned int state_left;
-unsigned int state_right;
 
+int state_left;
+int state_right;
+
+
+enum Direction {forward, backward};
 /*
 *
 *   TO COMPLETE
@@ -73,6 +80,17 @@ void motor_init(void)
 {
 	state_left = 0;
 	state_right = 0;
+	nb_cycle_togo_l = 0;
+	nb_cycle_togo_r = 0;
+	gpio_config_output_pushpull_floating(MOTOR_RIGHT_A);
+	gpio_config_output_pushpull_floating(MOTOR_RIGHT_B);
+	gpio_config_output_pushpull_floating(MOTOR_RIGHT_C);
+	gpio_config_output_pushpull_floating(MOTOR_RIGHT_D);
+
+	gpio_config_output_pushpull_floating(MOTOR_LEFT_A);
+	gpio_config_output_pushpull_floating(MOTOR_LEFT_B);
+	gpio_config_output_pushpull_floating(MOTOR_LEFT_C);
+	gpio_config_output_pushpull_floating(MOTOR_LEFT_D);
 
 	// Enable TIM7 clock
 	RCC->APB1ENR |= MOTOR_LEFT_TIMER_EN;
@@ -110,16 +128,23 @@ void motor_init(void)
 */
 static void right_motor_update(const uint8_t *out)
 {
-	if (step_table[state_right%4][0]) gpio_set(MOTOR_RIGHT_A);
-	else gpio_clear(MOTOR_RIGHT_A);
-	if (step_table[state_right%4][1]) gpio_set(MOTOR_RIGHT_B);
-	else gpio_clear(MOTOR_RIGHT_B);
-	if (step_table[state_right%4][2]) gpio_set(MOTOR_RIGHT_C);
-	else gpio_clear(MOTOR_RIGHT_C);
-	if (step_table[state_right%4][3]) gpio_set(MOTOR_RIGHT_D);
-	else gpio_clear(MOTOR_RIGHT_D);
+	if (out == forward){
+		if (state_right == 3) state_right=0;
+		else state_right++;
+	} else {
+		if (state_right == 0) state_right=3;
+		else state_right--;
+	}
 
-	state_right++;
+//	state_right++;
+	if (step_table[state_right][0]) gpio_set(MOTOR_RIGHT_A);
+	else gpio_clear(MOTOR_RIGHT_A);
+	if (step_table[state_right][1]) gpio_set(MOTOR_RIGHT_B);
+	else gpio_clear(MOTOR_RIGHT_B);
+	if (step_table[state_right][2]) gpio_set(MOTOR_RIGHT_C);
+	else gpio_clear(MOTOR_RIGHT_C);
+	if (step_table[state_right][3]) gpio_set(MOTOR_RIGHT_D);
+	else gpio_clear(MOTOR_RIGHT_D);
 }
 
 /*
@@ -127,20 +152,27 @@ static void right_motor_update(const uint8_t *out)
 *   TO COMPLETE
 *
 *   Updates the state of the gpios of the left motor given an array of 4 elements
-*   describing the state. For exeample step_table[0] which gives the first step.
+*   describing the state. For example step_table[0] which gives the first step.
 */
 static void left_motor_update(const uint8_t *out)
 {
-	if (step_table[state_left%4][0]) gpio_set(MOTOR_LEFT_A);
-	else gpio_clear(MOTOR_LEFT_A);
-	if (step_table[state_left%4][1]) gpio_set(MOTOR_LEFT_B);
-	else gpio_clear(MOTOR_LEFT_B);
-	if (step_table[state_left%4][2]) gpio_set(MOTOR_LEFT_C);
-	else gpio_clear(MOTOR_LEFT_C);
-	if (step_table[state_left%4][3]) gpio_set(MOTOR_LEFT_D);
-	else gpio_clear(MOTOR_LEFT_D);
 
-	state_left++;
+	if (out == backward){
+		if (state_left == 3) state_left=0;
+		else state_left++;
+	} else {
+		if (state_left == 0) state_left=3;
+		else state_left--;
+	}
+
+	if (step_table[state_left][0]) gpio_set(MOTOR_LEFT_A);
+	else gpio_clear(MOTOR_LEFT_A);
+	if (step_table[state_left][1]) gpio_set(MOTOR_LEFT_B);
+	else gpio_clear(MOTOR_LEFT_B);
+	if (step_table[state_left][2]) gpio_set(MOTOR_LEFT_C);
+	else gpio_clear(MOTOR_LEFT_C);
+	if (step_table[state_left][3]) gpio_set(MOTOR_LEFT_D);
+	else gpio_clear(MOTOR_LEFT_D);
 }
 
 /*
@@ -150,7 +182,29 @@ static void left_motor_update(const uint8_t *out)
 *   Stops the motors (all the gpio must be clear to 0) and set 0 to the ARR register of the timers to prevent
 *   the interrupts of the timers (because it never reaches 0 after an increment)
 */
+
+
 void motor_stop(void)
+{
+	motor_right_stop();
+	motor_left_stop();
+}
+
+void motor_left_stop(void)
+{
+	if (step_halt[0]) gpio_set(MOTOR_LEFT_A);
+	else gpio_clear(MOTOR_LEFT_A);
+	if (step_halt[1]) gpio_set(MOTOR_LEFT_B);
+	else gpio_clear(MOTOR_LEFT_B);
+	if (step_halt[2]) gpio_set(MOTOR_LEFT_C);
+	else gpio_clear(MOTOR_LEFT_C);
+	if (step_halt[3]) gpio_set(MOTOR_LEFT_D);
+	else gpio_clear(MOTOR_LEFT_D);
+
+	MOTOR_LEFT_TIMER -> ARR = 0;
+}
+
+void motor_right_stop(void)
 {
 	if (step_halt[0]) gpio_set(MOTOR_RIGHT_A);
 	else gpio_clear(MOTOR_RIGHT_A);
@@ -161,16 +215,8 @@ void motor_stop(void)
 	if (step_halt[3]) gpio_set(MOTOR_RIGHT_D);
 	else gpio_clear(MOTOR_RIGHT_D);
 
-	if (step_halt[0]) gpio_set(MOTOR_LEFT_A);
-	else gpio_clear(MOTOR_LEFT_A);
-	if (step_halt[1]) gpio_set(MOTOR_LEFT_B);
-	else gpio_clear(MOTOR_LEFT_B);
-	if (step_halt[2]) gpio_set(MOTOR_LEFT_C);
-	else gpio_clear(MOTOR_LEFT_C);
-	if (step_halt[3]) gpio_set(MOTOR_LEFT_D);
-	else gpio_clear(MOTOR_LEFT_D);
+	MOTOR_RIGHT_TIMER -> ARR = 0;
 }
-
 /*
 *
 *   TO COMPLETE
@@ -181,7 +227,12 @@ void motor_stop(void)
 void motor_set_position(float position_r, float position_l, float speed_r, float speed_l)
 {
 
+	nb_cycle_togo_r = position_r * NSTEP_ONE_TURN  / WHEEL_PERIMETER;
+	nb_cycle_togo_l = position_l * NSTEP_ONE_TURN  / WHEEL_PERIMETER;
+	motor_set_speed(speed_r, speed_l);
 }
+
+
 
 /*
 *
@@ -196,7 +247,22 @@ void motor_set_position(float position_r, float position_l, float speed_r, float
 */
 void motor_set_speed(float speed_r, float speed_l)
 {
+	if (speed_r <= MOTOR_SPEED_LIMIT && speed_l <= MOTOR_SPEED_LIMIT){
+		MOTOR_RIGHT_TIMER -> ARR = TIMER_FREQ * WHEEL_PERIMETER /  NSTEP_ONE_TURN  /speed_r;
+		MOTOR_LEFT_TIMER -> ARR = TIMER_FREQ * WHEEL_PERIMETER /  NSTEP_ONE_TURN  /speed_l;
+	} else {
+		speed_r = MOTOR_SPEED_LIMIT;
+		speed_l = MOTOR_SPEED_LIMIT;
+		//SET LED
+	}
+}
 
+
+
+void wait_motor_done(void){
+	while (nb_cycle_togo_l != 0 || nb_cycle_togo_r != 0){
+		;
+	}
 }
 
 /*
@@ -221,6 +287,16 @@ void MOTOR_RIGHT_IRQHandler(void)
     */
 
 	/* do something ... */
+
+	if (nb_cycle_togo_r > 0){
+		nb_cycle_togo_r--;
+		right_motor_update(forward);
+	} else if (nb_cycle_togo_r < 0){
+		nb_cycle_togo_r++;
+		right_motor_update(backward);
+	} else {
+		motor_right_stop();
+	}
 
 	// Clear interrupt flag
 	MOTOR_RIGHT_TIMER->SR &= ~TIM_SR_UIF;
@@ -249,6 +325,16 @@ void MOTOR_LEFT_IRQHandler(void)
     */
 
 	/* do something ... */
+
+	if (nb_cycle_togo_l > 0){
+		nb_cycle_togo_l--;
+		left_motor_update(forward);
+	} else if (nb_cycle_togo_l < 0){
+		nb_cycle_togo_l++;
+		left_motor_update(backward);
+	} else {
+		motor_left_stop();
+	}
 
 	// Clear interrupt flag
     MOTOR_LEFT_TIMER->SR &= ~TIM_SR_UIF;
