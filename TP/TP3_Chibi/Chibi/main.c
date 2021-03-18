@@ -140,16 +140,14 @@ void show_gravity(imu_msg_t *imu_values){
     	if (imu_values->acceleration[Y_AXIS] < 0){
     		palClearPad(GPIOD, GPIOD_LED1);
     	}
-    	else{
+    	else {
     		palClearPad(GPIOD, GPIOD_LED5);
     	}
-    }
-
-    else{
-		if(imu_values->acceleration[X_AXIS] < 0){
+    } else {
+		if (imu_values->acceleration[X_AXIS] < 0){
 			palClearPad(GPIOD, GPIOD_LED3);
 		}
-		else{
+		else {
 			palClearPad(GPIOD, GPIOD_LED7);
 		}
     }

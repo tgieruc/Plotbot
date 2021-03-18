@@ -14,9 +14,7 @@ static imu_msg_t imu_values;
 static thread_t *imuThd;
 static bool imu_configured = false;
 
-void floatArrayAdd(float *arraydestination, float *arrayaddition, uint16_t size_array );/***************************INTERNAL FUNCTIONS************************************/
-void intArrayAdd(int16_t *arraydestination, int16_t *arrayaddition, uint16_t size_array, uint16_t nb_samples );
-void floatArrayDivise(float *arraydestination, float *arraydivise, float divisor, uint16_t size_array );
+void intArrayAddAndDivise(int16_t *arraydestination, int16_t *arrayaddition, uint16_t size_array, uint16_t nb_samples );
 void intArrayReplace(int16_t *arraydestination, int16_t *arrayreplacer,uint16_t size_array );
  /**
  * @brief   Computes the measurements of the imu into readable measurements
@@ -105,79 +103,35 @@ void imu_stop(void) {
 void imu_compute_offset(messagebus_topic_t * imu_topic, uint16_t nb_samples){
 
 
-    /*
-    *   TASK 9 : TO COMPLETE
-    */
-
 	imu_msg_t imu_values_temp;
-    float acceleration[NB_AXIS]={0,0,0}; // m/s^2
-    float gyro_rate[NB_AXIS]={0,0,0}; // rad/s
-    float temperature=0;
-    float magnetometer[NB_AXIS]={0,0,0}; //uT
     int16_t acc_raw[NB_AXIS]={0,0,0}; //raw values
     int16_t gyro_raw[NB_AXIS]={0,0,0}; //raw values
-    int16_t acc_offset[NB_AXIS]={0,0,0}; //raw offsets
-    int16_t gyro_offset[NB_AXIS]={0,0,0}; //raw offsets
-    int16_t acc_filtered[NB_AXIS]={0,0,0};
-    int16_t gyro_filtered[NB_AXIS]={0,0,0};
-    uint8_t status=0;
+
 
 	for (int i = 0; i < nb_samples; ++i){
         messagebus_topic_wait(imu_topic, &imu_values_temp, sizeof(imu_values));
 
-//        floatArrayAdd(acceleration,imu_values_temp.acceleration,NB_AXIS);
-//        floatArrayAdd(gyro_rate,imu_values_temp.gyro_rate,NB_AXIS);
-//        temperature += imu_values_temp.temperature;
-//        floatArrayAdd(magnetometer,imu_values_temp.magnetometer,NB_AXIS);
-        intArrayAdd(acc_raw,imu_values_temp.acc_raw,NB_AXIS,nb_samples);
-        intArrayAdd(gyro_raw,imu_values_temp.gyro_raw,NB_AXIS,nb_samples);
-//        intArrayAdd(acc_offset,imu_values_temp.acc_offset,NB_AXIS);
-//        intArrayAdd(gyro_offset,imu_values_temp.gyro_offset,NB_AXIS);
-//        intArrayAdd(acc_filtered,imu_values_temp.acc_filtered,NB_AXIS);
-//        intArrayAdd(gyro_filtered,imu_values_temp.gyro_filtered,NB_AXIS);
-//        status += imu_values_temp.status;
+        intArrayAddAndDivise(acc_raw,imu_values_temp.acc_raw,NB_AXIS,nb_samples);
+        intArrayAddAndDivise(gyro_raw,imu_values_temp.gyro_raw,NB_AXIS,nb_samples);
 	}
 
-
-
-//	floatArrayDivise(imu_values.acceleration,acceleration,nb_samples,NB_AXIS);
-//	floatArrayDivise(imu_values.gyro_rate,gyro_rate,nb_samples,NB_AXIS);
-//	imu_values.temperature=temperature/nb_samples;
-//	floatArrayDivise(imu_values.magnetometer,magnetometer,nb_samples,NB_AXIS);
-//	intArrayDivise(imu_values.acc_raw,acc_raw,nb_samples,NB_AXIS);
-//	intArrayDivise(imu_values.gyro_raw,gyro_raw,nb_samples,NB_AXIS);
 	intArrayReplace(imu_values.acc_offset,acc_raw,NB_AXIS);
 	intArrayReplace(imu_values.gyro_offset,gyro_raw,NB_AXIS);
-//	intArrayDivise(imu_values.acc_filtered,acc_filtered,nb_samples,NB_AXIS);
-//	intArrayDivise(imu_values.gyro_filtered,gyro_filtered,nb_samples,NB_AXIS);
-//	imu_values.status=status/nb_samples;
 
 }
 
-void floatArrayAdd(float *arraydestination, float *arrayaddition, uint16_t size_array ){
+
+
+void intArrayAddAndDivise(int16_t *arraydestination, int16_t *arrayaddition, uint16_t size_array, uint16_t divisor ){
 	for (int i = 0; i < size_array; ++i){
-		arraydestination[i] += arrayaddition[i];
+		arraydestination[i] += arrayaddition[i] / divisor;
 	}
 }
 
-void intArrayAdd(int16_t *arraydestination, int16_t *arrayaddition, uint16_t size_array, uint16_t nb_samples ){
+
+void intArrayReplace(int16_t *arrayreplaced, int16_t *arrayreplacor, uint16_t size_array ){
 	for (int i = 0; i < size_array; ++i){
-		arraydestination[i] += arrayaddition[i]/nb_samples;
-	}
-}
-
-void floatArrayDivise(float *arraydestination, float *arraydivise, float divisor, uint16_t size_array ){
-	for (int i = 0; i < size_array; ++i){
-		arraydestination[i] = arraydivise[i] / divisor;
-
-	}
-
-
-}
-
-void intArrayReplace(int16_t *arraydestination, int16_t *arrayreplacer,uint16_t size_array ){
-	for (int i = 0; i < size_array; ++i){
-		arraydestination[i] = arrayreplacer[i];
+		arrayreplaced[i] = arrayreplacor[i];
 	}
 }
 
