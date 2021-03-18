@@ -15,19 +15,24 @@ static thread_t *imuThd;
 static bool imu_configured = false;
 
 void floatArrayAdd(float *arraydestination, float *arrayaddition, uint16_t size_array );/***************************INTERNAL FUNCTIONS************************************/
-void intArrayAdd(int16_t *arraydestination, int16_t *arrayaddition, uint16_t size_array );
+void intArrayAdd(int16_t *arraydestination, int16_t *arrayaddition, uint16_t size_array, uint16_t nb_samples );
 void floatArrayDivise(float *arraydestination, float *arraydivise, float divisor, uint16_t size_array );
-void intArrayDivise(int16_t *arraydestination, int16_t *arraydivise, int16_t divisor, uint16_t size_array );
+void intArrayReplace(int16_t *arraydestination, int16_t *arrayreplacer,uint16_t size_array );
  /**
  * @brief   Computes the measurements of the imu into readable measurements
  * 			RAW accelerometer to m/s^2 acceleration
  * 			RAW gyroscope to rad/s speed
  */
+
+
 void imu_compute_units(void){
-	/*
-    *   TASK 10 : TO COMPLETE
-    */
+	for (int i = 0 ; i < NB_AXIS; ++i){
+		imu_values.acceleration[i] = (imu_values.acc_raw[i] - imu_values.acc_offset[i]) * 2 / 16384 * STANDARD_GRAVITY;
+		imu_values.gyro_rate[i]    = DEG2RAD((imu_values.gyro_raw[i] - imu_values.gyro_offset[i]) * 250/16384);
+	}
 }
+
+
 
  /**
  * @brief   Thread which updates the measurements and publishes them
@@ -124,8 +129,8 @@ void imu_compute_offset(messagebus_topic_t * imu_topic, uint16_t nb_samples){
 //        floatArrayAdd(gyro_rate,imu_values_temp.gyro_rate,NB_AXIS);
 //        temperature += imu_values_temp.temperature;
 //        floatArrayAdd(magnetometer,imu_values_temp.magnetometer,NB_AXIS);
-        intArrayAdd(acc_raw,imu_values_temp.acc_raw,NB_AXIS);
-        intArrayAdd(gyro_raw,imu_values_temp.gyro_raw,NB_AXIS);
+        intArrayAdd(acc_raw,imu_values_temp.acc_raw,NB_AXIS,nb_samples);
+        intArrayAdd(gyro_raw,imu_values_temp.gyro_raw,NB_AXIS,nb_samples);
 //        intArrayAdd(acc_offset,imu_values_temp.acc_offset,NB_AXIS);
 //        intArrayAdd(gyro_offset,imu_values_temp.gyro_offset,NB_AXIS);
 //        intArrayAdd(acc_filtered,imu_values_temp.acc_filtered,NB_AXIS);
@@ -141,8 +146,8 @@ void imu_compute_offset(messagebus_topic_t * imu_topic, uint16_t nb_samples){
 //	floatArrayDivise(imu_values.magnetometer,magnetometer,nb_samples,NB_AXIS);
 //	intArrayDivise(imu_values.acc_raw,acc_raw,nb_samples,NB_AXIS);
 //	intArrayDivise(imu_values.gyro_raw,gyro_raw,nb_samples,NB_AXIS);
-	intArrayDivise(imu_values.acc_offset,acc_raw,nb_samples,NB_AXIS);
-	intArrayDivise(imu_values.gyro_offset,gyro_raw,nb_samples,NB_AXIS);
+	intArrayReplace(imu_values.acc_offset,acc_raw,NB_AXIS);
+	intArrayReplace(imu_values.gyro_offset,gyro_raw,NB_AXIS);
 //	intArrayDivise(imu_values.acc_filtered,acc_filtered,nb_samples,NB_AXIS);
 //	intArrayDivise(imu_values.gyro_filtered,gyro_filtered,nb_samples,NB_AXIS);
 //	imu_values.status=status/nb_samples;
@@ -155,9 +160,9 @@ void floatArrayAdd(float *arraydestination, float *arrayaddition, uint16_t size_
 	}
 }
 
-void intArrayAdd(int16_t *arraydestination, int16_t *arrayaddition, uint16_t size_array ){
+void intArrayAdd(int16_t *arraydestination, int16_t *arrayaddition, uint16_t size_array, uint16_t nb_samples ){
 	for (int i = 0; i < size_array; ++i){
-		arraydestination[i] += arrayaddition[i];
+		arraydestination[i] += arrayaddition[i]/nb_samples;
 	}
 }
 
@@ -170,9 +175,9 @@ void floatArrayDivise(float *arraydestination, float *arraydivise, float divisor
 
 }
 
-void intArrayDivise(int16_t *arraydestination, int16_t *arraydivise, int16_t divisor, uint16_t size_array ){
+void intArrayReplace(int16_t *arraydestination, int16_t *arrayreplacer,uint16_t size_array ){
 	for (int i = 0; i < size_array; ++i){
-		arraydestination[i] = arraydivise[i] / divisor;
+		arraydestination[i] = arrayreplacer[i];
 	}
 }
 
