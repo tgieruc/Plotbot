@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
   55              		.weak	Vector1B4
   56              		.thumb_set Vector1B4,_unhandled_exception
   57              		.weak	Vector1B0
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 2
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 2
 
 
   58              		.thumb_set Vector1B0,_unhandled_exception
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  112              		.thumb_set Vector144,_unhandled_exception
  113              		.weak	Vector140
  114              		.thumb_set Vector140,_unhandled_exception
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 3
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 3
 
 
  115              		.weak	Vector13C
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  169              		.weak	VectorD0
  170              		.thumb_set VectorD0,_unhandled_exception
  171              		.weak	VectorCC
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 4
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 4
 
 
  172              		.thumb_set VectorCC,_unhandled_exception
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  226              		.thumb_set Vector60,_unhandled_exception
  227              		.weak	Vector5C
  228              		.thumb_set Vector5C,_unhandled_exception
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 5
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 5
 
 
  229              		.weak	Vector58
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  279              		.align	2
  280              		.type	_vectors, %object
  281              		.size	_vectors, 448
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 6
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 6
 
 
  282              	_vectors:
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  336 00d4 00000000 		.word	VectorD4
  337 00d8 00000000 		.word	VectorD8
  338 00dc 00000000 		.word	VectorDC
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 7
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 7
 
 
  339 00e0 00000000 		.word	VectorE0
@@ -418,12 +418,12 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  393 01b8 00000000 		.word	Vector1B8
  394 01bc 00000000 		.word	Vector1BC
  395              		.text
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 8
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 8
 
 
  396              	.Letext0:
- 397              		.file 2 "c:\\users\\guill\\desktop\\tp robotique\\eclipse_e-puck2\\tools\\gcc-arm-none-eabi-7-2017
- 398              		.file 3 "c:\\users\\guill\\desktop\\tp robotique\\eclipse_e-puck2\\tools\\gcc-arm-none-eabi-7-2017
+ 397              		.file 2 "e:\\artyom\\eclipse_e-puck2\\tools\\gcc-arm-none-eabi-7-2017-q4-major-win32\\arm-none-eab
+ 398              		.file 3 "e:\\artyom\\eclipse_e-puck2\\tools\\gcc-arm-none-eabi-7-2017-q4-major-win32\\arm-none-eab
  399              		.file 4 "../../lib/ChibiOS/os/ext/CMSIS/include/core_cm4.h"
  400              		.file 5 "../../lib/ChibiOS/os/ext/CMSIS/ST/system_stm32f4xx.h"
  401              		.section	.debug_info,"",%progbits
@@ -433,58 +433,58 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  405 0006 00000000 		.4byte	.Ldebug_abbrev0
  406 000a 04       		.byte	0x4
  407 000b 01       		.uleb128 0x1
- 408 000c EB000000 		.4byte	.LASF36
+ 408 000c D3000000 		.4byte	.LASF36
  409 0010 0C       		.byte	0xc
- 410 0011 17030000 		.4byte	.LASF37
- 411 0015 6E000000 		.4byte	.LASF38
+ 410 0011 F7020000 		.4byte	.LASF37
+ 411 0015 36000000 		.4byte	.LASF38
  412 0019 00000000 		.4byte	.Ldebug_ranges0+0
  413 001d 00000000 		.4byte	0
  414 0021 00000000 		.4byte	.Ldebug_line0
  415 0025 02       		.uleb128 0x2
  416 0026 01       		.byte	0x1
  417 0027 06       		.byte	0x6
- 418 0028 86030000 		.4byte	.LASF0
+ 418 0028 66030000 		.4byte	.LASF0
  419 002c 02       		.uleb128 0x2
  420 002d 01       		.byte	0x1
  421 002e 08       		.byte	0x8
- 422 002f DD000000 		.4byte	.LASF1
+ 422 002f C5000000 		.4byte	.LASF1
  423 0033 02       		.uleb128 0x2
  424 0034 02       		.byte	0x2
  425 0035 05       		.byte	0x5
- 426 0036 0D030000 		.4byte	.LASF2
+ 426 0036 ED020000 		.4byte	.LASF2
  427 003a 02       		.uleb128 0x2
  428 003b 02       		.byte	0x2
  429 003c 07       		.byte	0x7
- 430 003d 50000000 		.4byte	.LASF3
+ 430 003d 8A000000 		.4byte	.LASF3
  431 0041 03       		.uleb128 0x3
- 432 0042 36000000 		.4byte	.LASF5
+ 432 0042 70000000 		.4byte	.LASF5
  433 0046 02       		.byte	0x2
  434 0047 4D       		.byte	0x4d
  435 0048 4C000000 		.4byte	0x4c
  436 004c 02       		.uleb128 0x2
  437 004d 04       		.byte	0x4
  438 004e 05       		.byte	0x5
- 439 004f 61030000 		.4byte	.LASF4
+ 439 004f 41030000 		.4byte	.LASF4
  440 0053 03       		.uleb128 0x3
- 441 0054 52020000 		.4byte	.LASF6
+ 441 0054 32020000 		.4byte	.LASF6
  442 0058 02       		.byte	0x2
  443 0059 4F       		.byte	0x4f
  444 005a 5E000000 		.4byte	0x5e
  445 005e 02       		.uleb128 0x2
  446 005f 04       		.byte	0x4
  447 0060 07       		.byte	0x7
- 448 0061 0C020000 		.4byte	.LASF7
+ 448 0061 EC010000 		.4byte	.LASF7
  449 0065 02       		.uleb128 0x2
  450 0066 08       		.byte	0x8
  451 0067 05       		.byte	0x5
- 452 0068 D2020000 		.4byte	.LASF8
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 9
+ 452 0068 B2020000 		.4byte	.LASF8
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 9
 
 
  453 006c 02       		.uleb128 0x2
  454 006d 08       		.byte	0x8
  455 006e 07       		.byte	0x7
- 456 006f 7F020000 		.4byte	.LASF9
+ 456 006f 5F020000 		.4byte	.LASF9
  457 0073 04       		.uleb128 0x4
  458 0074 04       		.byte	0x4
  459 0075 05       		.byte	0x5
@@ -492,26 +492,26 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  461 007a 02       		.uleb128 0x2
  462 007b 04       		.byte	0x4
  463 007c 07       		.byte	0x7
- 464 007d 69020000 		.4byte	.LASF10
+ 464 007d 49020000 		.4byte	.LASF10
  465 0081 03       		.uleb128 0x3
- 466 0082 04020000 		.4byte	.LASF11
+ 466 0082 A8000000 		.4byte	.LASF11
  467 0086 03       		.byte	0x3
  468 0087 2C       		.byte	0x2c
  469 0088 41000000 		.4byte	0x41
  470 008c 05       		.uleb128 0x5
  471 008d 81000000 		.4byte	0x81
  472 0091 03       		.uleb128 0x3
- 473 0092 58030000 		.4byte	.LASF12
+ 473 0092 38030000 		.4byte	.LASF12
  474 0096 03       		.byte	0x3
  475 0097 30       		.byte	0x30
  476 0098 53000000 		.4byte	0x53
  477 009c 06       		.uleb128 0x6
- 478 009d 2A020000 		.4byte	.LASF13
+ 478 009d 0A020000 		.4byte	.LASF13
  479 00a1 04       		.byte	0x4
  480 00a2 A706     		.2byte	0x6a7
  481 00a4 8C000000 		.4byte	0x8c
  482 00a8 07       		.uleb128 0x7
- 483 00a9 E0020000 		.4byte	.LASF14
+ 483 00a9 C0020000 		.4byte	.LASF14
  484 00ad 05       		.byte	0x5
  485 00ae 4C       		.byte	0x4c
  486 00af 91000000 		.4byte	0x91
@@ -530,34 +530,34 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  499 00c9 31       		.byte	0x31
  500 00ca 9B010000 		.4byte	0x19b
  501 00ce 0B       		.uleb128 0xb
- 502 00cf 63000000 		.4byte	.LASF16
+ 502 00cf 9D000000 		.4byte	.LASF16
  503 00d3 01       		.byte	0x1
  504 00d4 32       		.byte	0x32
  505 00d5 9B010000 		.4byte	0x19b
  506 00d9 00       		.byte	0
  507 00da 0B       		.uleb128 0xb
- 508 00db B1020000 		.4byte	.LASF17
+ 508 00db 91020000 		.4byte	.LASF17
  509 00df 01       		.byte	0x1
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 10
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 10
 
 
  510 00e0 33       		.byte	0x33
  511 00e1 B3000000 		.4byte	0xb3
  512 00e5 04       		.byte	0x4
  513 00e6 0B       		.uleb128 0xb
- 514 00e7 5D020000 		.4byte	.LASF18
+ 514 00e7 3D020000 		.4byte	.LASF18
  515 00eb 01       		.byte	0x1
  516 00ec 34       		.byte	0x34
  517 00ed B3000000 		.4byte	0xb3
  518 00f1 08       		.byte	0x8
  519 00f2 0B       		.uleb128 0xb
- 520 00f3 40020000 		.4byte	.LASF19
+ 520 00f3 20020000 		.4byte	.LASF19
  521 00f7 01       		.byte	0x1
  522 00f8 35       		.byte	0x35
  523 00f9 B3000000 		.4byte	0xb3
  524 00fd 0C       		.byte	0xc
  525 00fe 0B       		.uleb128 0xb
- 526 00ff 74030000 		.4byte	.LASF20
+ 526 00ff 54030000 		.4byte	.LASF20
  527 0103 01       		.byte	0x1
  528 0104 36       		.byte	0x36
  529 0105 B3000000 		.4byte	0xb3
@@ -569,46 +569,46 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  535 0111 B3000000 		.4byte	0xb3
  536 0115 14       		.byte	0x14
  537 0116 0B       		.uleb128 0xb
- 538 0117 BF020000 		.4byte	.LASF22
+ 538 0117 9F020000 		.4byte	.LASF22
  539 011b 01       		.byte	0x1
  540 011c 38       		.byte	0x38
  541 011d B3000000 		.4byte	0xb3
  542 0121 18       		.byte	0x18
  543 0122 0B       		.uleb128 0xb
- 544 0123 37020000 		.4byte	.LASF23
+ 544 0123 17020000 		.4byte	.LASF23
  545 0127 01       		.byte	0x1
  546 0128 39       		.byte	0x39
  547 0129 B3000000 		.4byte	0xb3
  548 012d 1C       		.byte	0x1c
  549 012e 0B       		.uleb128 0xb
- 550 012f 76020000 		.4byte	.LASF24
+ 550 012f 56020000 		.4byte	.LASF24
  551 0133 01       		.byte	0x1
  552 0134 3A       		.byte	0x3a
  553 0135 B3000000 		.4byte	0xb3
  554 0139 20       		.byte	0x20
  555 013a 0B       		.uleb128 0xb
- 556 013b 96020000 		.4byte	.LASF25
+ 556 013b 76020000 		.4byte	.LASF25
  557 013f 01       		.byte	0x1
  558 0140 3B       		.byte	0x3b
  559 0141 B3000000 		.4byte	0xb3
  560 0145 24       		.byte	0x24
  561 0146 0B       		.uleb128 0xb
- 562 0147 9F020000 		.4byte	.LASF26
+ 562 0147 7F020000 		.4byte	.LASF26
  563 014b 01       		.byte	0x1
  564 014c 3C       		.byte	0x3c
  565 014d B3000000 		.4byte	0xb3
  566 0151 28       		.byte	0x28
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 11
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 11
 
 
  567 0152 0B       		.uleb128 0xb
- 568 0153 1E020000 		.4byte	.LASF27
+ 568 0153 FE010000 		.4byte	.LASF27
  569 0157 01       		.byte	0x1
  570 0158 3D       		.byte	0x3d
  571 0159 B3000000 		.4byte	0xb3
  572 015d 2C       		.byte	0x2c
  573 015e 0B       		.uleb128 0xb
- 574 015f C8000000 		.4byte	.LASF28
+ 574 015f B0000000 		.4byte	.LASF28
  575 0163 01       		.byte	0x1
  576 0164 3E       		.byte	0x3e
  577 0165 B3000000 		.4byte	0xb3
@@ -626,13 +626,13 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  589 017d B3000000 		.4byte	0xb3
  590 0181 38       		.byte	0x38
  591 0182 0B       		.uleb128 0xb
- 592 0183 40000000 		.4byte	.LASF31
+ 592 0183 7A000000 		.4byte	.LASF31
  593 0187 01       		.byte	0x1
  594 0188 41       		.byte	0x41
  595 0189 B3000000 		.4byte	0xb3
  596 018d 3C       		.byte	0x3c
  597 018e 0B       		.uleb128 0xb
- 598 018f 05030000 		.4byte	.LASF32
+ 598 018f E5020000 		.4byte	.LASF32
  599 0193 01       		.byte	0x1
  600 0194 42       		.byte	0x42
  601 0195 A1010000 		.4byte	0x1a1
@@ -649,20 +649,20 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  612 01af 5F       		.byte	0x5f
  613 01b0 00       		.byte	0
  614 01b1 03       		.uleb128 0x3
- 615 01b2 92030000 		.4byte	.LASF33
+ 615 01b2 72030000 		.4byte	.LASF33
  616 01b6 01       		.byte	0x1
  617 01b7 43       		.byte	0x43
  618 01b8 C5000000 		.4byte	0xc5
  619 01bc 07       		.uleb128 0x7
- 620 01bd 9C030000 		.4byte	.LASF34
+ 620 01bd 7C030000 		.4byte	.LASF34
  621 01c1 01       		.byte	0x1
  622 01c2 58       		.byte	0x58
  623 01c3 91000000 		.4byte	0x91
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 12
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 12
 
 
  624 01c7 0E       		.uleb128 0xe
- 625 01c8 A8020000 		.4byte	.LASF35
+ 625 01c8 88020000 		.4byte	.LASF35
  626 01cc 01       		.byte	0x1
  627 01cd D701     		.2byte	0x1d7
  628 01cf B1010000 		.4byte	0x1b1
@@ -670,7 +670,7 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  630 01d4 03       		.byte	0x3
  631 01d5 00000000 		.4byte	_vectors
  632 01d9 0F       		.uleb128 0xf
- 633 01da F0020000 		.4byte	.LASF39
+ 633 01da D0020000 		.4byte	.LASF39
  634 01de 01       		.byte	0x1
  635 01df 4F       		.byte	0x4f
  636 01e0 00000000 		.4byte	.LFB112
@@ -690,8 +690,8 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  650 0200 00       		.byte	0
  651 0201 00       		.byte	0
  652 0202 12       		.uleb128 0x12
- 653 0203 6A030000 		.4byte	.LASF40
- 654 0207 6A030000 		.4byte	.LASF40
+ 653 0203 4A030000 		.4byte	.LASF40
+ 654 0207 4A030000 		.4byte	.LASF40
  655 020b 01       		.byte	0x1
  656 020c 4C       		.byte	0x4c
  657 020d 00       		.byte	0
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  678 0012 00       		.byte	0
  679 0013 02       		.uleb128 0x2
  680 0014 24       		.uleb128 0x24
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 13
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 13
 
 
  681 0015 00       		.byte	0
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  735 004b 19       		.uleb128 0x19
  736 004c 00       		.byte	0
  737 004d 00       		.byte	0
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 14
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 14
 
 
  738 004e 07       		.uleb128 0x7
@@ -838,7 +838,7 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  792 0084 0B       		.uleb128 0xb
  793 0085 49       		.uleb128 0x49
  794 0086 13       		.uleb128 0x13
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 15
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 15
 
 
  795 0087 38       		.uleb128 0x38
@@ -898,7 +898,7 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  849 00bd 12       		.uleb128 0x12
  850 00be 06       		.uleb128 0x6
  851 00bf 40       		.uleb128 0x40
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 16
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 16
 
 
  852 00c0 18       		.uleb128 0x18
@@ -958,7 +958,7 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  906 001c 00000000 		.4byte	0
  907              		.section	.debug_ranges,"",%progbits
  908              	.Ldebug_ranges0:
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 17
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 17
 
 
  909 0000 00000000 		.4byte	.LFB112
@@ -967,8 +967,8 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  912 000c 00000000 		.4byte	0
  913              		.section	.debug_line,"",%progbits
  914              	.Ldebug_line0:
- 915 0000 F8010000 		.section	.debug_str,"MS",%progbits,1
- 915      0200E101 
+ 915 0000 C4010000 		.section	.debug_str,"MS",%progbits,1
+ 915      0200AD01 
  915      00000201 
  915      FB0E0D00 
  915      01010101 
@@ -992,358 +992,356 @@ ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 1
  923      73765F68 
  923      616E646C 
  923      657200
- 924              	.LASF5:
- 925 0036 5F5F696E 		.ascii	"__int32_t\000"
- 925      7433325F 
- 925      7400
- 926              	.LASF31:
- 927 0040 73797374 		.ascii	"systick_handler\000"
- 927      69636B5F 
- 927      68616E64 
- 927      6C657200 
- 928              	.LASF3:
- 929 0050 73686F72 		.ascii	"short unsigned int\000"
- 929      7420756E 
- 929      7369676E 
- 929      65642069 
- 929      6E7400
- 930              	.LASF16:
- 931 0063 696E6974 		.ascii	"init_stack\000"
- 931      5F737461 
- 931      636B00
- 932              	.LASF38:
- 933 006e 433A5C55 		.ascii	"C:\\Users\\guill\\Desktop\\TP robotique\\projet git"
- 933      73657273 
- 933      5C677569 
- 933      6C6C5C44 
- 933      65736B74 
- 934 009c 6875625C 		.ascii	"hub\\Projet-robotique-BA6\\TP\\TP3_Chibi\\Chibi\000"
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 18
+ 924              	.LASF38:
+ 925 0036 453A5C41 		.ascii	"E:\\Artyom\\Desktop\\Projet-robotique-BA6\\TP\\TP3_"
+ 925      7274796F 
+ 925      6D5C4465 
+ 925      736B746F 
+ 925      705C5072 
+ 926 0064 43686962 		.ascii	"Chibi\\Chibi\000"
+ 926      695C4368 
+ 926      69626900 
+ 927              	.LASF5:
+ 928 0070 5F5F696E 		.ascii	"__int32_t\000"
+ 928      7433325F 
+ 928      7400
+ 929              	.LASF31:
+ 930 007a 73797374 		.ascii	"systick_handler\000"
+ 930      69636B5F 
+ 930      68616E64 
+ 930      6C657200 
+ 931              	.LASF3:
+ 932 008a 73686F72 		.ascii	"short unsigned int\000"
+ 932      7420756E 
+ 932      7369676E 
+ 932      65642069 
+ 932      6E7400
+ 933              	.LASF16:
+ 934 009d 696E6974 		.ascii	"init_stack\000"
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 18
 
 
- 934      50726F6A 
- 934      65742D72 
- 934      6F626F74 
- 934      69717565 
- 935              	.LASF28:
- 936 00c8 64656275 		.ascii	"debugmonitor_handler\000"
- 936      676D6F6E 
- 936      69746F72 
- 936      5F68616E 
- 936      646C6572 
- 937              	.LASF1:
- 938 00dd 756E7369 		.ascii	"unsigned char\000"
- 938      676E6564 
- 938      20636861 
- 938      7200
- 939              	.LASF36:
- 940 00eb 474E5520 		.ascii	"GNU C11 7.2.1 20170904 (release) [ARM/embedded-7-br"
- 940      43313120 
- 940      372E322E 
- 940      31203230 
- 940      31373039 
- 941 011e 616E6368 		.ascii	"anch revision 255204] -mcpu=cortex-m4 -mfloat-abi=h"
- 941      20726576 
- 941      6973696F 
- 941      6E203235 
- 941      35323034 
- 942 0151 61726420 		.ascii	"ard -mfpu=fpv4-sp-d16 -mno-thumb-interwork -mthumb "
- 942      2D6D6670 
- 942      753D6670 
- 942      76342D73 
- 942      702D6431 
- 943 0184 2D676764 		.ascii	"-ggdb -O2 -fomit-frame-pointer -falign-functions=16"
- 943      62202D4F 
- 943      32202D66 
- 943      6F6D6974 
- 943      2D667261 
- 944 01b7 202D6666 		.ascii	" -ffunction-sections -fdata-sections -fno-common -f"
- 944      756E6374 
- 944      696F6E2D 
- 944      73656374 
- 944      696F6E73 
- 945 01ea 73696E67 		.ascii	"single-precision-constant\000"
- 945      6C652D70 
- 945      72656369 
- 945      73696F6E 
- 945      2D636F6E 
- 946              	.LASF11:
- 947 0204 696E7433 		.ascii	"int32_t\000"
- 947      325F7400 
+ 934      5F737461 
+ 934      636B00
+ 935              	.LASF11:
+ 936 00a8 696E7433 		.ascii	"int32_t\000"
+ 936      325F7400 
+ 937              	.LASF28:
+ 938 00b0 64656275 		.ascii	"debugmonitor_handler\000"
+ 938      676D6F6E 
+ 938      69746F72 
+ 938      5F68616E 
+ 938      646C6572 
+ 939              	.LASF1:
+ 940 00c5 756E7369 		.ascii	"unsigned char\000"
+ 940      676E6564 
+ 940      20636861 
+ 940      7200
+ 941              	.LASF36:
+ 942 00d3 474E5520 		.ascii	"GNU C11 7.2.1 20170904 (release) [ARM/embedded-7-br"
+ 942      43313120 
+ 942      372E322E 
+ 942      31203230 
+ 942      31373039 
+ 943 0106 616E6368 		.ascii	"anch revision 255204] -mcpu=cortex-m4 -mfloat-abi=h"
+ 943      20726576 
+ 943      6973696F 
+ 943      6E203235 
+ 943      35323034 
+ 944 0139 61726420 		.ascii	"ard -mfpu=fpv4-sp-d16 -mno-thumb-interwork -mthumb "
+ 944      2D6D6670 
+ 944      753D6670 
+ 944      76342D73 
+ 944      702D6431 
+ 945 016c 2D676764 		.ascii	"-ggdb -O2 -fomit-frame-pointer -falign-functions=16"
+ 945      62202D4F 
+ 945      32202D66 
+ 945      6F6D6974 
+ 945      2D667261 
+ 946 019f 202D6666 		.ascii	" -ffunction-sections -fdata-sections -fno-common -f"
+ 946      756E6374 
+ 946      696F6E2D 
+ 946      73656374 
+ 946      696F6E73 
+ 947 01d2 73696E67 		.ascii	"single-precision-constant\000"
+ 947      6C652D70 
+ 947      72656369 
+ 947      73696F6E 
+ 947      2D636F6E 
  948              	.LASF7:
- 949 020c 6C6F6E67 		.ascii	"long unsigned int\000"
+ 949 01ec 6C6F6E67 		.ascii	"long unsigned int\000"
  949      20756E73 
  949      69676E65 
  949      6420696E 
  949      7400
  950              	.LASF27:
- 951 021e 7376635F 		.ascii	"svc_handler\000"
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 19
-
-
+ 951 01fe 7376635F 		.ascii	"svc_handler\000"
  951      68616E64 
  951      6C657200 
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 19
+
+
  952              	.LASF13:
- 953 022a 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 953 020a 49544D5F 		.ascii	"ITM_RxBuffer\000"
  953      52784275 
  953      66666572 
  953      00
  954              	.LASF23:
- 955 0237 76656374 		.ascii	"vector1c\000"
+ 955 0217 76656374 		.ascii	"vector1c\000"
  955      6F723163 
  955      00
  956              	.LASF19:
- 957 0240 68617264 		.ascii	"hardfault_handler\000"
+ 957 0220 68617264 		.ascii	"hardfault_handler\000"
  957      6661756C 
  957      745F6861 
  957      6E646C65 
  957      7200
  958              	.LASF6:
- 959 0252 5F5F7569 		.ascii	"__uint32_t\000"
+ 959 0232 5F5F7569 		.ascii	"__uint32_t\000"
  959      6E743332 
  959      5F7400
  960              	.LASF18:
- 961 025d 6E6D695F 		.ascii	"nmi_handler\000"
+ 961 023d 6E6D695F 		.ascii	"nmi_handler\000"
  961      68616E64 
  961      6C657200 
  962              	.LASF10:
- 963 0269 756E7369 		.ascii	"unsigned int\000"
+ 963 0249 756E7369 		.ascii	"unsigned int\000"
  963      676E6564 
  963      20696E74 
  963      00
  964              	.LASF24:
- 965 0276 76656374 		.ascii	"vector20\000"
+ 965 0256 76656374 		.ascii	"vector20\000"
  965      6F723230 
  965      00
  966              	.LASF9:
- 967 027f 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 967 025f 6C6F6E67 		.ascii	"long long unsigned int\000"
  967      206C6F6E 
  967      6720756E 
  967      7369676E 
  967      65642069 
  968              	.LASF25:
- 969 0296 76656374 		.ascii	"vector24\000"
+ 969 0276 76656374 		.ascii	"vector24\000"
  969      6F723234 
  969      00
  970              	.LASF26:
- 971 029f 76656374 		.ascii	"vector28\000"
+ 971 027f 76656374 		.ascii	"vector28\000"
  971      6F723238 
  971      00
  972              	.LASF35:
- 973 02a8 5F766563 		.ascii	"_vectors\000"
+ 973 0288 5F766563 		.ascii	"_vectors\000"
  973      746F7273 
  973      00
  974              	.LASF17:
- 975 02b1 72657365 		.ascii	"reset_handler\000"
+ 975 0291 72657365 		.ascii	"reset_handler\000"
  975      745F6861 
  975      6E646C65 
  975      7200
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 20
-
-
  976              	.LASF22:
- 977 02bf 75736167 		.ascii	"usagefault_handler\000"
+ 977 029f 75736167 		.ascii	"usagefault_handler\000"
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 20
+
+
  977      65666175 
  977      6C745F68 
  977      616E646C 
  977      657200
  978              	.LASF8:
- 979 02d2 6C6F6E67 		.ascii	"long long int\000"
+ 979 02b2 6C6F6E67 		.ascii	"long long int\000"
  979      206C6F6E 
  979      6720696E 
  979      7400
  980              	.LASF14:
- 981 02e0 53797374 		.ascii	"SystemCoreClock\000"
+ 981 02c0 53797374 		.ascii	"SystemCoreClock\000"
  981      656D436F 
  981      7265436C 
  981      6F636B00 
  982              	.LASF39:
- 983 02f0 5F756E68 		.ascii	"_unhandled_exception\000"
+ 983 02d0 5F756E68 		.ascii	"_unhandled_exception\000"
  983      616E646C 
  983      65645F65 
  983      78636570 
  983      74696F6E 
  984              	.LASF32:
- 985 0305 76656374 		.ascii	"vectors\000"
+ 985 02e5 76656374 		.ascii	"vectors\000"
  985      6F727300 
  986              	.LASF2:
- 987 030d 73686F72 		.ascii	"short int\000"
+ 987 02ed 73686F72 		.ascii	"short int\000"
  987      7420696E 
  987      7400
  988              	.LASF37:
- 989 0317 2E2E2F2E 		.ascii	"../../lib/ChibiOS/os/common/ports/ARMCMx/compilers/"
+ 989 02f7 2E2E2F2E 		.ascii	"../../lib/ChibiOS/os/common/ports/ARMCMx/compilers/"
  989      2E2F6C69 
  989      622F4368 
  989      6962694F 
  989      532F6F73 
- 990 034a 4743432F 		.ascii	"GCC/vectors.c\000"
+ 990 032a 4743432F 		.ascii	"GCC/vectors.c\000"
  990      76656374 
  990      6F72732E 
  990      6300
  991              	.LASF12:
- 992 0358 75696E74 		.ascii	"uint32_t\000"
+ 992 0338 75696E74 		.ascii	"uint32_t\000"
  992      33325F74 
  992      00
  993              	.LASF4:
- 994 0361 6C6F6E67 		.ascii	"long int\000"
+ 994 0341 6C6F6E67 		.ascii	"long int\000"
  994      20696E74 
  994      00
  995              	.LASF40:
- 996 036a 63685379 		.ascii	"chSysHalt\000"
+ 996 034a 63685379 		.ascii	"chSysHalt\000"
  996      7348616C 
  996      7400
  997              	.LASF20:
- 998 0374 6D656D6D 		.ascii	"memmanage_handler\000"
+ 998 0354 6D656D6D 		.ascii	"memmanage_handler\000"
  998      616E6167 
  998      655F6861 
  998      6E646C65 
  998      7200
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 21
-
-
  999              	.LASF0:
- 1000 0386 7369676E 		.ascii	"signed char\000"
+ 1000 0366 7369676E 		.ascii	"signed char\000"
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 21
+
+
  1000      65642063 
  1000      68617200 
  1001              	.LASF33:
- 1002 0392 76656374 		.ascii	"vectors_t\000"
+ 1002 0372 76656374 		.ascii	"vectors_t\000"
  1002      6F72735F 
  1002      7400
  1003              	.LASF34:
- 1004 039c 5F5F6D61 		.ascii	"__main_stack_end__\000"
+ 1004 037c 5F5F6D61 		.ascii	"__main_stack_end__\000"
  1004      696E5F73 
  1004      7461636B 
  1004      5F656E64 
  1004      5F5F00
  1005              		.ident	"GCC: (GNU Tools for Arm Embedded Processors 7-2017-q4-major) 7.2.1 20170904 (release) [ARM
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 22
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 22
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 vectors.c
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:18     .text._unhandled_exception:00000000 $t
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 _unhandled_exception
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:47     .text._unhandled_exception:0000000c $d
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector1BC
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector1B8
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector1B4
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector1B0
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector1AC
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector1A8
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector1A4
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector1A0
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector19C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector198
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector194
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector190
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector18C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector188
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector184
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector180
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector17C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector178
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector174
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector170
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector16C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector168
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector164
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector160
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector15C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector158
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector154
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector150
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector14C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector148
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector144
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector140
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector13C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector138
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector134
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector130
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector12C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector128
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector124
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector120
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector11C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector118
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector114
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector110
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector10C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector108
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector104
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector100
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorFC
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorF8
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorF4
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorF0
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 23
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:18     .text._unhandled_exception:00000000 $t
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 _unhandled_exception
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:47     .text._unhandled_exception:0000000c $d
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector1BC
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector1B8
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector1B4
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector1B0
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector1AC
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector1A8
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector1A4
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector1A0
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector19C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector198
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector194
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector190
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector18C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector188
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector184
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector180
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector17C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector178
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector174
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector170
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector16C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector168
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector164
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector160
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector15C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector158
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector154
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector150
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector14C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector148
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector144
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector140
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector13C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector138
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector134
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector130
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector12C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector128
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector124
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector120
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector11C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector118
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector114
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector110
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector10C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector108
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector104
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector100
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorFC
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorF8
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorF4
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorF0
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 23
 
 
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorEC
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorE8
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorE4
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorE0
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorDC
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorD8
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorD4
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorD0
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorCC
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorC8
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorC4
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorC0
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorBC
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorB8
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorB4
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorB0
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorAC
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorA8
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorA4
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 VectorA0
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector9C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector98
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector94
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector90
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector8C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector88
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector84
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector80
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector7C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector78
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector74
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector70
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector6C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector68
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector64
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector60
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector5C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector58
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector54
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector50
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector4C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector48
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector44
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector40
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 SysTick_Handler
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 PendSV_Handler
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector34
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 DebugMon_Handler
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 SVC_Handler
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector28
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector24
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector20
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Vector1C
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 UsageFault_Handler
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 BusFault_Handler
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 MemManage_Handler
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 HardFault_Handler
-ARM GAS  C:\Users\guill\AppData\Local\Temp\cc57hIyK.s 			page 24
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorEC
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorE8
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorE4
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorE0
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorDC
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorD8
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorD4
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorD0
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorCC
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorC8
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorC4
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorC0
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorBC
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorB8
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorB4
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorB0
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorAC
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorA8
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorA4
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 VectorA0
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector9C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector98
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector94
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector90
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector8C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector88
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector84
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector80
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector7C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector78
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector74
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector70
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector6C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector68
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector64
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector60
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector5C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector58
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector54
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector50
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector4C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector48
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector44
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector40
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 SysTick_Handler
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 PendSV_Handler
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector34
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 DebugMon_Handler
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 SVC_Handler
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector28
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector24
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector20
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Vector1C
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 UsageFault_Handler
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 BusFault_Handler
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 MemManage_Handler
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 HardFault_Handler
+ARM GAS  C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s 			page 24
 
 
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 NMI_Handler
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:26     .text._unhandled_exception:00000000 Reset_Handler
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:282    .vectors:00000000 _vectors
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:275    .rodata._unhandled_exception.str1.4:00000000 $d
-C:\Users\guill\AppData\Local\Temp\cc57hIyK.s:279    .vectors:00000000 $d
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 NMI_Handler
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:26     .text._unhandled_exception:00000000 Reset_Handler
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:282    .vectors:00000000 _vectors
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:275    .rodata._unhandled_exception.str1.4:00000000 $d
+C:\Users\theo\AppData\Local\Temp\cc2nJrYy.s:279    .vectors:00000000 $d
 
 UNDEFINED SYMBOLS
 chSysHalt

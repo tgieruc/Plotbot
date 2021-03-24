@@ -52,21 +52,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
  16 .comment      0000007e  00000000  00000000  00020861  2**0
                   CONTENTS, READONLY
- 17 .debug_info   0004e85d  00000000  00000000  000208df  2**0
+ 17 .debug_info   0004e6ad  00000000  00000000  000208df  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_abbrev 0000872c  00000000  00000000  0006f13c  2**0
+ 18 .debug_abbrev 0000870e  00000000  00000000  0006ef8c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .debug_aranges 00000e48  00000000  00000000  00077868  2**0
+ 19 .debug_aranges 00000e38  00000000  00000000  0007769a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 20 .debug_ranges 00002c20  00000000  00000000  000786b0  2**0
+ 20 .debug_ranges 00002c10  00000000  00000000  000784d2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 21 .debug_line   000101f0  00000000  00000000  0007b2d0  2**0
+ 21 .debug_line   0000f666  00000000  00000000  0007b0e2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 22 .debug_str    0000493f  00000000  00000000  0008b4c0  2**0
+ 22 .debug_str    0000490b  00000000  00000000  0008a748  2**0
                   CONTENTS, READONLY, DEBUGGING
- 23 .debug_frame  00002e44  00000000  00000000  0008fe00  2**2
+ 23 .debug_frame  00002e24  00000000  00000000  0008f054  2**2
                   CONTENTS, READONLY, DEBUGGING
- 24 .debug_loc    0000ad61  00000000  00000000  00092c44  2**0
+ 24 .debug_loc    0000ac73  00000000  00000000  00091e78  2**0
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 08000000 l    d  startup	00000000 startup
@@ -242,9 +242,9 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 08005b30 l     F .text	000000e8 imu_reader_thd
 200012a4 l     O .bss	00000004 imuThd
 200012a8 l     O .bss	00000001 imu_configured
-200012b0 l     O .bss	00000578 imu_reader_thd_wa.10163
+200012b0 l     O .bss	00000578 imu_reader_thd_wa.10154
 20001828 l     O .bss	00000050 imu_values
-080066e0 l     O .text	0000000f __FUNCTION__.10151
+080066e0 l     O .text	0000000f __FUNCTION__.10142
 080066f0 l     O .text	0000000c __func__.7153
 00000000 l    df *ABS*	00000000 abs.c
 00000000 l    df *ABS*	00000000 memset.c
