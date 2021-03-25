@@ -27,12 +27,17 @@ static THD_FUNCTION(CaptureImage, arg) {
 	dcmi_prepare();
 
     while(1){
+    	systime_t t1 = chVTGetSystemTime();
         //starts a capture
 		dcmi_capture_start();
 		//waits for the capture to be done
 		wait_image_ready();
 		//signals an image has been captured
-		chBSemSignal(&image_ready_sem);
+//		chBSemSignal(&image_ready_sem);
+		systime_t t2 = chVTGetSystemTime();
+
+		chprintf((BaseSequentialStream *)&SD3, "time = %d \n", t2-t1);
+
     }
 }
 
@@ -44,17 +49,29 @@ static THD_FUNCTION(ProcessImage, arg) {
     (void)arg;
 
 	uint8_t *img_buff_ptr;
-	uint8_t image[IMAGE_BUFFER_SIZE] = {0};
+	uint8_t image[IMAGE_BUFFER_SIZE] = {1};
 
     while(1){
+
+
     	//waits until an image has been captured
         chBSemWait(&image_ready_sem);
 		//gets the pointer to the array filled with the last image in RGB565    
 		img_buff_ptr = dcmi_get_last_image_ptr();
 
-		/*
-		*	To complete
-		*/
+		//opération sur les bits :
+		//l image est envoyée en 2 x 8 bits, nouso n veut les 5 premier
+		//donc on prend que les pairs et on shift de 3 pour les avoir
+
+		for (int i=0 ; i < IMAGE_BUFFER_SIZE; i++){
+
+		image[i] = *(img_buff_ptr+2*i) >> 3  ;
+
+		}
+
+
+		SendUint8ToComputer(image, IMAGE_BUFFER_SIZE);
+
     }
 }
 
