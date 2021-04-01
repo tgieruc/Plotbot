@@ -8,11 +8,59 @@
 
 #include <process_image.h>
 
+#define MARGIN 50
+
 
 static float distance_cm = 0;
+static float position_px = 0;
 
 //semaphore
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
+
+static uint8_t min_val(uint8_t image[]){
+	uint8_t small = 255;
+	for (int i=0 ; i < IMAGE_BUFFER_SIZE; i++){
+		if (image[i] < small){
+			small = image[i];
+		}
+	}
+	return small;
+}
+
+static uint8_t max_val(uint8_t image[]){
+	uint8_t big = 0;
+	for (int i=0 ; i < IMAGE_BUFFER_SIZE; i++){
+		if (image[i] > big){
+			big = image[i];
+		}
+	}
+	return big;
+}
+
+static void image_info (uint8_t image[],uint16_t *width, uint16_t *position){
+	uint8_t threshold = (max_val(image)+3*min_val(image))/4;
+	uint16_t tempwidth = 0;
+	uint16_t tempposition = 0;
+
+	for (int i=MARGIN ; i < IMAGE_BUFFER_SIZE-MARGIN; i++){
+			if (image[i]<threshold){
+				(tempwidth)++;
+				tempposition = i;//dernier pixel de la ligne
+			}
+			else if (tempwidth != 0){
+				if (tempwidth < 10){//filtre passe haut
+					tempwidth  = 0;
+				}else{
+					if(tempwidth > *width){//prend la barre la plus grande
+						*width = tempwidth;
+						*position = tempposition;
+					}
+				}
+			}
+	}
+}
+
+
 
 static THD_WORKING_AREA(waCaptureImage, 256);
 static THD_FUNCTION(CaptureImage, arg) {
@@ -26,17 +74,19 @@ static THD_FUNCTION(CaptureImage, arg) {
 	dcmi_set_capture_mode(CAPTURE_ONE_SHOT);
 	dcmi_prepare();
 
+
     while(1){
-    	systime_t t1 = chVTGetSystemTime();
-        //starts a capture
+//    	systime_t t1 ;
+//    	t1 = chVTGetSystemTime();
+
+    	//starts a capture
 		dcmi_capture_start();
 		//waits for the capture to be done
 		wait_image_ready();
 		//signals an image has been captured
-//		chBSemSignal(&image_ready_sem);
-		systime_t t2 = chVTGetSystemTime();
+		chBSemSignal(&image_ready_sem);
 
-		chprintf((BaseSequentialStream *)&SD3, "time = %d \n", t2-t1);
+//		chprintf((BaseSequentialStream *)&SDU1, "time = %d \n width = %d px\n position = %d px\n", chVTGetSystemTime()-t);
 
     }
 }
@@ -51,8 +101,13 @@ static THD_FUNCTION(ProcessImage, arg) {
 	uint8_t *img_buff_ptr;
 	uint8_t image[IMAGE_BUFFER_SIZE] = {1};
 
+	uint16_t width = 0;
+	uint16_t position = 0;
+
     while(1){
 
+    	width = 0;
+    	 position = 0;
 
     	//waits until an image has been captured
         chBSemWait(&image_ready_sem);
@@ -68,15 +123,22 @@ static THD_FUNCTION(ProcessImage, arg) {
 		image[i] = *(img_buff_ptr+2*i) >> 3  ;
 
 		}
+//		SendUint8ToComputer(image, IMAGE_BUFFER_SIZE);
 
-
-		SendUint8ToComputer(image, IMAGE_BUFFER_SIZE);
-
+		image_info(image,&width,&position);
+		distance_cm = width*(-0.0357)+17 ;//fonction qui converti les px en cm
+		position_px = position-width/2;
+//		chprintf((BaseSequentialStream *)&SDU1, "width = %d px position = %d px distance = %f cm\n",width,position-width/2,distance_cm);
     }
 }
 
+
 float get_distance_cm(void){
 	return distance_cm;
+}
+
+float get_position_px(void){
+	return position_px;
 }
 
 void process_image_start(void){
