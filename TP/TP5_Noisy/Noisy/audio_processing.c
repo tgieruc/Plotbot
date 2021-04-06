@@ -43,7 +43,15 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 	*	1024 samples, then we compute the FFTs.
 	*
 	*/
+	if(size == FFT_SIZE){
 
+	            doFFT_optimized(FFT_SIZE, bufferCmplxInput);
+
+	            arm_cmplx_mag_f32(bufferCmplxInput, bufferOutput, FFT_SIZE);
+
+	            SendFloatToComputer((BaseSequentialStream *) &SD3, bufferOutput, FFT_SIZE);
+
+	        }
 	
 }
 
