@@ -25,6 +25,24 @@ static float micRight_output[FFT_SIZE];
 static float micFront_output[FFT_SIZE];
 static float micBack_output[FFT_SIZE];
 
+#define MIN_VALUE_THRESHOLD 10000
+
+#define MIN_FREQ 10 //we don’t analyze before this index to not use resources for nothing
+#define FREQ_FORWARD 16 //250Hz
+#define FREQ_LEFT 19 //296Hz
+#define FREQ_RIGHT 23 //359HZ
+#define FREQ_BACKWARD 26 //406Hz
+#define MAX_FREQ 30 //we don’t analyze after this index to not use resources for nothing
+
+#define FREQ_FORWARD_L (FREQ_FORWARD-1)
+#define FREQ_FORWARD_H (FREQ_FORWARD+1)
+#define FREQ_LEFT_L (FREQ_LEFT-1)
+#define FREQ_LEFT_H (FREQ_LEFT+1)
+#define FREQ_RIGHT_L (FREQ_RIGHT-1)
+#define FREQ_RIGHT_H (FREQ_RIGHT+1)
+#define FREQ_BACKWARD_L (FREQ_BACKWARD-1)
+#define FREQ_BACKWARD_H (FREQ_BACKWARD+1)
+
 /*
 *	Callback called when the demodulation of the four microphones is done.
 *	We get 160 samples per mic every 10ms (16kHz)
@@ -34,6 +52,52 @@ static float micBack_output[FFT_SIZE];
 *							so we have [micRight1, micLeft1, micBack1, micFront1, micRight2, etc...]
 *	uint16_t num_samples	Tells how many data we get in total (should always be 640)
 */
+
+void peakdetection(float* data){
+
+	float max_norm = MIN_VALUE_THRESHOLD;
+	int16_t max_norm_index = -1;
+	//search for the highest peak
+	for(uint16_t i = MIN_FREQ ; i <= MAX_FREQ ; i++){
+		if(data[i] > max_norm){
+			max_norm = data[i];
+			max_norm_index = i;
+		}
+	}
+
+	//go forward
+	if(max_norm_index >= FREQ_FORWARD_L && max_norm_index <= FREQ_FORWARD_H){
+	left_motor_set_speed(600);
+	right_motor_set_speed(600);
+	}
+
+	//turn left
+	else if(max_norm_index >= FREQ_LEFT_L && max_norm_index <= FREQ_LEFT_H){
+	left_motor_set_speed(-600);
+	right_motor_set_speed(600);
+	}
+
+	//turn right
+	else if(max_norm_index >= FREQ_RIGHT_L && max_norm_index <= FREQ_RIGHT_H){
+	left_motor_set_speed(600);
+	right_motor_set_speed(-600);
+	}
+
+	//go backward
+	else if(max_norm_index >= FREQ_BACKWARD_L && max_norm_index <= FREQ_BACKWARD_H){
+	left_motor_set_speed(-600);
+	right_motor_set_speed(-600);
+	}
+
+	else{
+	left_motor_set_speed(0);
+	right_motor_set_speed(0);
+	}
+}
+
+
+
+
 void processAudioData(int16_t *data, uint16_t num_samples){
 
 	/*
@@ -43,17 +107,73 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 	*	1024 samples, then we compute the FFTs.
 	*
 	*/
-	if(size == FFT_SIZE){
 
-	            doFFT_optimized(FFT_SIZE, bufferCmplxInput);
+	static uint16_t nb_samples = 0;
+	static uint8_t mustSend = 0;
 
-	            arm_cmplx_mag_f32(bufferCmplxInput, bufferOutput, FFT_SIZE);
+	for(uint16_t i = 0 ; i < num_samples ; i+=4){
+	micRight_cmplx_input[nb_samples] = (float)data[i + MIC_RIGHT];
+	micLeft_cmplx_input[nb_samples] = (float)data[i + MIC_LEFT];
+	micBack_cmplx_input[nb_samples] = (float)data[i + MIC_BACK];
+	micFront_cmplx_input[nb_samples] = (float)data[i + MIC_FRONT];
 
-	            SendFloatToComputer((BaseSequentialStream *) &SD3, bufferOutput, FFT_SIZE);
+	nb_samples++;
 
-	        }
-	
+	micRight_cmplx_input[nb_samples] = 0;
+	micLeft_cmplx_input[nb_samples] = 0;
+	micBack_cmplx_input[nb_samples] = 0;
+	micFront_cmplx_input[nb_samples] = 0;
+
+	nb_samples++;
+
+		if(nb_samples >= (2 * FFT_SIZE)){
+			break;
+		}
+	}
+
+	if(nb_samples >= (2 * FFT_SIZE)){
+
+		doFFT_optimized(FFT_SIZE, micRight_cmplx_input);
+		doFFT_optimized(FFT_SIZE, micLeft_cmplx_input);
+		doFFT_optimized(FFT_SIZE, micBack_cmplx_input);
+		doFFT_optimized(FFT_SIZE, micFront_cmplx_input);
+
+		arm_cmplx_mag_f32(micRight_cmplx_input, micRight_output, FFT_SIZE);
+		arm_cmplx_mag_f32(micLeft_cmplx_input, micLeft_output, FFT_SIZE);
+		arm_cmplx_mag_f32(micBack_cmplx_input, micBack_output, FFT_SIZE);
+		arm_cmplx_mag_f32(micFront_cmplx_input, micFront_output, FFT_SIZE);
+
+
+
+		if(mustSend > 8){
+		//signals to send the result to the computer
+		chBSemSignal(&sendToComputer_sem);
+		mustSend = 0;
+		}
+
+		nb_samples = 0;
+		mustSend++;
+
+		peakdetection(micFront_output);
+	}
+
 }
+
+
+
+
+
+//	if(size == FFT_SIZE){
+//
+//	            doFFT_optimized(FFT_SIZE, bufferCmplxInput);
+//
+//	            arm_cmplx_mag_f32(bufferCmplxInput, bufferOutput, FFT_SIZE);
+//
+//	            SendFloatToComputer((BaseSequentialStream *) &SD3, bufferOutput, FFT_SIZE);
+//
+//	        }
+	
+
 
 
 void wait_send_to_computer(void){
