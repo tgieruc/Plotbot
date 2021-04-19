@@ -17,14 +17,16 @@ typedef enum {
 	BACK_OUTPUT
 } BUFFER_NAME_t;
 
-int8_t get_peak();
+int8_t get_peak(void);
+
+void audioSeq_start(void);
 
 void processAudioData(int16_t *data, uint16_t num_samples);
 
 /*
 *	put the invoking thread into sleep until it can process the audio datas
 */
-void wait_send_to_computer(void);
+void wait_audio_processing(void);
 
 /*
 *	Returns the pointer to the BUFFER_NAME_t buffer asked

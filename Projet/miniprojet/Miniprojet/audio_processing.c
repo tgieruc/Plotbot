@@ -11,11 +11,10 @@
 #include <fft.h>
 #include <arm_math.h>
 
-static int8_t peak;
 
 
 //semaphore
-static BSEMAPHORE_DECL(sendToComputer_sem, TRUE);
+static BSEMAPHORE_DECL(sendToProcessing_sem, TRUE);
 
 //2 times FFT_SIZE because these arrays contain complex numbers (real + imaginary)
 static float micLeft_cmplx_input[2 * FFT_SIZE];
@@ -37,14 +36,101 @@ static float micBack_output[FFT_SIZE];
 #define FREQ_BACKWARD	26	//406Hz
 #define MAX_FREQ		50	//we don't analyze after this index to not use resources for nothing
 
-#define FREQ_FORWARD_L		(FREQ_FORWARD-1)
-#define FREQ_FORWARD_H		(FREQ_FORWARD+1)
-#define FREQ_LEFT_L			(FREQ_LEFT-1)
-#define FREQ_LEFT_H			(FREQ_LEFT+1)
-#define FREQ_RIGHT_L		(FREQ_RIGHT-1)
-#define FREQ_RIGHT_H		(FREQ_RIGHT+1)
-#define FREQ_BACKWARD_L		(FREQ_BACKWARD-1)
-#define FREQ_BACKWARD_H		(FREQ_BACKWARD+1)
+#define MAX_CASES 15
+
+
+static int8_t peak;
+static int8_t sequ[MAX_CASES];
+static uint8_t sequ_size = 0;
+
+bool is_same_freq(int8_t input_freq, int8_t match_freq);
+void get_next_freq(int8_t old_freq);
+bool sequEnded(void);
+void print_sequ(void);
+
+void print_sequ(void){
+	chprintf((BaseSequentialStream *) &SD3, "\n Sequ: [");
+	for (uint i = 0; i < sequ_size; ++i){
+		chprintf((BaseSequentialStream *) &SD3, "%d ", sequ[i]);
+		chprintf((BaseSequentialStream *) &SD3, "  ");
+	}
+	chprintf((BaseSequentialStream *) &SD3, "]\n");
+
+}
+
+bool is_same_freq(int8_t input_freq, int8_t match_freq){
+	return ((input_freq - 1) < match_freq && (input_freq + 1) > match_freq);
+}
+
+void waitForNextPeak(int8_t old_freq){
+	while (is_same_freq(peak, old_freq)) {
+		chThdYield();
+	}
+}
+void wait4startSequ(void){
+    int8_t startSequence[] = {29, 32, 36, 29, 32};
+    int8_t old_freq = -1;
+	wait_audio_processing();
+	uint8_t i = 0;
+	while (i < sizeof startSequence / sizeof startSequence[0]){
+		waitForNextPeak(old_freq);
+		chprintf((BaseSequentialStream *) &SD3, "peak : %d\n",peak);
+		if (is_same_freq(peak,startSequence[i])){
+			old_freq = peak;
+			i++;
+		} else {
+			old_freq = -1;
+			i = 0;
+		}
+	}
+
+	chprintf((BaseSequentialStream *) &SD3, "startSequ detected");
+}
+
+bool sequEnded(void){
+    int8_t endSequence[] = {36, 29, 32, 29};
+    bool sequEnd = true;
+    if (sequ_size <= 4) return false;
+    for (uint8_t i = 0; i < sizeof endSequence / sizeof endSequence[0]; ++i){
+    	if (!is_same_freq(sequ[sequ_size-4+i],endSequence[i])){
+    		sequEnd = false;
+    	}
+    }
+	return sequEnd;
+}
+
+static THD_WORKING_AREA(waThdGetAudioSeq, 1024);
+static THD_FUNCTION(ThdGetAudioSeq, arg) {
+
+    chRegSetThreadName(__FUNCTION__);
+    (void)arg;
+
+
+    while(1){
+    	wait4startSequ();
+        int8_t old_freq = -1;
+    	while (!sequEnded()){
+    		waitForNextPeak(old_freq);
+    		sequ[sequ_size] = peak;
+    		sequ_size++;
+    		old_freq = peak;
+    		chprintf((BaseSequentialStream *) &SD3, "sequ %d : %d\n",sequ_size,sequ[sequ_size-1]);
+    	}
+    	sequ_size -= 4;
+    	print_sequ();
+    	chprintf((BaseSequentialStream *) &SD3, "end\n\n");
+    	while(1){
+
+    	}
+    }
+}
+
+
+
+void audioSeq_start(void){
+	chThdCreateStatic(waThdGetAudioSeq, sizeof(waThdGetAudioSeq), NORMALPRIO, ThdGetAudioSeq, NULL);
+}
+
 
 /*
 *	Simple function used to detect the highest value in a buffer
@@ -64,49 +150,10 @@ void set_peak(float* data){
 	peak = max_norm_index;
 }
 
-int8_t get_peak(){
+int8_t get_peak(void){
 	return peak;
 }
 
-
-void sound_remote(float* data){
-	float max_norm = MIN_VALUE_THRESHOLD;
-	int16_t max_norm_index = -1; 
-
-	//search for the highest peak
-	for(uint16_t i = MIN_FREQ ; i <= MAX_FREQ ; i++){
-		if(data[i] > max_norm){
-			max_norm = data[i];
-			max_norm_index = i;
-		}
-	}
-
-	//go forward
-	if(max_norm_index >= FREQ_FORWARD_L && max_norm_index <= FREQ_FORWARD_H){
-		left_motor_set_speed(600);
-		right_motor_set_speed(600);
-	}
-	//turn left
-	else if(max_norm_index >= FREQ_LEFT_L && max_norm_index <= FREQ_LEFT_H){
-		left_motor_set_speed(-600);
-		right_motor_set_speed(600);
-	}
-	//turn right
-	else if(max_norm_index >= FREQ_RIGHT_L && max_norm_index <= FREQ_RIGHT_H){
-		left_motor_set_speed(600);
-		right_motor_set_speed(-600);
-	}
-	//go backward
-	else if(max_norm_index >= FREQ_BACKWARD_L && max_norm_index <= FREQ_BACKWARD_H){
-		left_motor_set_speed(-600);
-		right_motor_set_speed(-600);
-	}
-	else{
-		left_motor_set_speed(0);
-		right_motor_set_speed(0);
-	}
-	
-}
 
 /*
 *	Callback called when the demodulation of the four microphones is done.
@@ -128,7 +175,7 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 	*/
 
 	static uint16_t nb_samples = 0;
-	static uint8_t mustSend = 0;
+
 
 	//loop to fill the buffers
 	for(uint16_t i = 0 ; i < num_samples ; i+=4){
@@ -179,20 +226,22 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 
 		//sends only one FFT result over 10 for 1 mic to not flood the computer
 		//sends to UART3
-		if(mustSend > 8){
+//		if(mustSend > 8){
 			//signals to send the result to the computer
-			chBSemSignal(&sendToComputer_sem);
-			mustSend = 0;
-		}
+		chBSemSignal(&sendToProcessing_sem);
+//			mustSend = 0;
+//		}
 		nb_samples = 0;
-		mustSend++;
+//		mustSend++;
 
 		set_peak(micLeft_output);
+//        SendFloatToComputer((BaseSequentialStream *) &SD3, send_tab, FFT_SIZE);
+
 	}
 }
 
-void wait_send_to_computer(void){
-	chBSemWait(&sendToComputer_sem);
+void wait_audio_processing(void){
+	chBSemWait(&sendToProcessing_sem);
 }
 
 float* get_audio_buffer_ptr(BUFFER_NAME_t name){

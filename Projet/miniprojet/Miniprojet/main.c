@@ -50,18 +50,6 @@ static void timer12_start(void){
 }
 
 
-static THD_WORKING_AREA(waThdGetAudioSeq, 128);
-static THD_FUNCTION(ThdGetAudioSeq, arg) {
-
-    chRegSetThreadName(__FUNCTION__);
-    (void)arg;
-
-    uint8_t startSequence = {
-    while(1){
-    	wait_send_to_computer();
-
-    }
-}
 
 int main(void)
 {
@@ -79,6 +67,7 @@ int main(void)
     //inits the motors
     motors_init();
 
+
     //temp tab used to store values in complex_float format
     //needed bx doFFT_c
     static complex_float temp_tab[FFT_SIZE];
@@ -89,15 +78,16 @@ int main(void)
     //starts the microphones processing thread.
     //it calls the callback given in parameter when samples are ready
     mic_start(&processAudioData);
+    audioSeq_start();
 
     /* Infinite loop. */
     while (1) {
         //waits until a result must be sent to the computer
-        wait_send_to_computer();
+    	wait_audio_processing();
 
         //we copy the buffer to avoid conflicts
-        arm_copy_f32(get_audio_buffer_ptr(LEFT_OUTPUT), send_tab, FFT_SIZE);
-        SendFloatToComputer((BaseSequentialStream *) &SD3, send_tab, FFT_SIZE);
+//        arm_copy_f32(get_audio_buffer_ptr(LEFT_OUTPUT), send_tab, FFT_SIZE);
+//        SendFloatToComputer((BaseSequentialStream *) &SD3, send_tab, FFT_SIZE);
     }
 }
 
