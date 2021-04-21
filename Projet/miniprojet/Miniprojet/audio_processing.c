@@ -14,7 +14,7 @@
 
 
 //semaphore
-static BSEMAPHORE_DECL(sendToProcessing_sem, TRUE);
+static BSEMAPHORE_DECL(readyForAudioProcessing, TRUE);
 
 //2 times FFT_SIZE because these arrays contain complex numbers (real + imaginary)
 static float micLeft_cmplx_input[2 * FFT_SIZE];
@@ -30,10 +30,6 @@ static float micBack_output[FFT_SIZE];
 #define MIN_VALUE_THRESHOLD	10000 
 
 #define MIN_FREQ		10	//we don't analyze before this index to not use resources for nothing
-#define FREQ_FORWARD	16	//250Hz
-#define FREQ_LEFT		19	//296Hz
-#define FREQ_RIGHT		22	//359HZ
-#define FREQ_BACKWARD	26	//406Hz
 #define MAX_FREQ		50	//we don't analyze after this index to not use resources for nothing
 
 #define MAX_CASES 15
@@ -111,12 +107,15 @@ static THD_FUNCTION(ThdGetAudioSeq, arg) {
         int8_t old_freq = -1;
     	while (!sequEnded()){
     		waitForNextPeak(old_freq);
-    		sequ[sequ_size] = peak;
+    		sequ[sequ_size] =  peak;
     		sequ_size++;
     		old_freq = peak;
     		chprintf((BaseSequentialStream *) &SD3, "sequ %d : %d\n",sequ_size,sequ[sequ_size-1]);
     	}
     	sequ_size -= 4;
+    	for (uint8_t i = 0; i < sequ_size; ++i){
+    		sequ[i] = ((sequ[i]+5)/3-6);
+    	}
     	print_sequ();
     	chprintf((BaseSequentialStream *) &SD3, "end\n\n");
     	while(1){
@@ -228,7 +227,7 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		//sends to UART3
 //		if(mustSend > 8){
 			//signals to send the result to the computer
-		chBSemSignal(&sendToProcessing_sem);
+		chBSemSignal(&readyForAudioProcessing);
 //			mustSend = 0;
 //		}
 		nb_samples = 0;
@@ -241,7 +240,7 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 }
 
 void wait_audio_processing(void){
-	chBSemWait(&sendToProcessing_sem);
+	chBSemWait(&readyForAudioProcessing);
 }
 
 float* get_audio_buffer_ptr(BUFFER_NAME_t name){

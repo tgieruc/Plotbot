@@ -33,3 +33,5 @@
 *.size
 *.mem
 *.list
+Projet/miniprojet/Miniprojet/libssp.a
+Projet/miniprojet/Miniprojet/libssp_nonshared.a
