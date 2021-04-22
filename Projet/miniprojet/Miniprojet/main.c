@@ -16,6 +16,7 @@
 #include <communications.h>
 #include <arm_math.h>
 #include <tof.h>
+#include "sensors/VL53L0X/VL53L0X.h"
 
 
 
@@ -75,7 +76,7 @@ int main(void)
     mic_start(&processAudioData);
     audioSeq_start();
 
-//    tof_start();
+//    smart_start();
 
     /* Infinite loop. */
     while (1) {

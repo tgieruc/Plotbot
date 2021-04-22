@@ -1,16 +1,11 @@
-#include "ch.h"
-#include "hal.h"
 #include <main.h>
-#include <usbcfg.h>
 #include <chprintf.h>
 
-#include <motors.h>
 #include <audio/microphone.h>
 #include <audio_processing.h>
 #include <communications.h>
 #include <fft.h>
 #include <arm_math.h>
-
 
 
 //semaphore
@@ -40,22 +35,21 @@ static int8_t sequ[MAX_CASES];
 static uint8_t sequ_size = 0;
 
 bool is_same_freq(int8_t input_freq, int8_t match_freq);
-void get_next_freq(int8_t old_freq);
 bool sequEnded(void);
 void print_sequ(void);
+void getSeq(void);
+
 
 void print_sequ(void){
-	chprintf((BaseSequentialStream *) &SD3, "\n Sequ: [");
+	chprintf((BaseSequentialStream *) &SD3, "\nSequ: [ ");
 	for (uint i = 0; i < sequ_size; ++i){
 		chprintf((BaseSequentialStream *) &SD3, "%d ", sequ[i]);
-		chprintf((BaseSequentialStream *) &SD3, "  ");
 	}
 	chprintf((BaseSequentialStream *) &SD3, "]\n");
-
 }
 
 bool is_same_freq(int8_t input_freq, int8_t match_freq){
-	return ((input_freq - 1) < match_freq && (input_freq + 1) > match_freq);
+	return ((input_freq - 1) <= match_freq && (input_freq + 1) >= match_freq);
 }
 
 void waitForNextPeak(int8_t old_freq){
@@ -64,10 +58,11 @@ void waitForNextPeak(int8_t old_freq){
 	}
 }
 void wait4startSequ(void){
-    int8_t startSequence[] = {29, 32, 36, 29, 32};
+    int8_t startSequence[] = {29, 32, 36, 29, 32, 44};
     int8_t old_freq = -1;
 	wait_audio_processing();
 	uint8_t i = 0;
+	chprintf((BaseSequentialStream *) &SD3, "listening...\n");
 	while (i < sizeof startSequence / sizeof startSequence[0]){
 		waitForNextPeak(old_freq);
 		chprintf((BaseSequentialStream *) &SD3, "peak : %d\n",peak);
@@ -79,20 +74,18 @@ void wait4startSequ(void){
 			i = 0;
 		}
 	}
-
 	chprintf((BaseSequentialStream *) &SD3, "startSequ detected");
 }
 
 bool sequEnded(void){
     int8_t endSequence[] = {36, 29, 32, 29};
-    bool sequEnd = true;
     if (sequ_size <= 4) return false;
     for (uint8_t i = 0; i < sizeof endSequence / sizeof endSequence[0]; ++i){
     	if (!is_same_freq(sequ[sequ_size-4+i],endSequence[i])){
-    		sequEnd = false;
+    		return false;
     	}
     }
-	return sequEnd;
+	return true;
 }
 
 static THD_WORKING_AREA(waThdGetAudioSeq, 1024);
@@ -101,30 +94,26 @@ static THD_FUNCTION(ThdGetAudioSeq, arg) {
     chRegSetThreadName(__FUNCTION__);
     (void)arg;
 
-
-    while(1){
-    	wait4startSequ();
-        int8_t old_freq = -1;
-    	while (!sequEnded()){
-    		waitForNextPeak(old_freq);
-    		sequ[sequ_size] =  peak;
-    		sequ_size++;
-    		old_freq = peak;
-    		chprintf((BaseSequentialStream *) &SD3, "sequ %d : %d\n",sequ_size,sequ[sequ_size-1]);
-    	}
-    	sequ_size -= 4;
-    	for (uint8_t i = 0; i < sequ_size; ++i){
-    		sequ[i] = ((sequ[i]+5)/3-6);
-    	}
-    	print_sequ();
-    	chprintf((BaseSequentialStream *) &SD3, "end\n\n");
-    	while(1){
-
-    	}
-    }
+	wait4startSequ();
+	getSeq();
+	print_sequ();
+	chprintf((BaseSequentialStream *) &SD3, "end\n\n");
 }
 
-
+void getSeq(void){
+	int8_t old_freq = 44;
+	while (!sequEnded()){
+		waitForNextPeak(old_freq);
+		sequ[sequ_size] =  peak;
+		sequ_size++;
+		old_freq = peak;
+		chprintf((BaseSequentialStream *) &SD3, "peak %d : %d\n",sequ_size,sequ[sequ_size-1]);
+	}
+	sequ_size -= 4;
+	for (uint8_t i = 0; i < sequ_size; ++i){
+		sequ[i] = ((sequ[i]+5)/3-6);
+	}
+}
 
 void audioSeq_start(void){
 	chThdCreateStatic(waThdGetAudioSeq, sizeof(waThdGetAudioSeq), NORMALPRIO, ThdGetAudioSeq, NULL);
@@ -133,7 +122,6 @@ void audioSeq_start(void){
 
 /*
 *	Simple function used to detect the highest value in a buffer
-*	and to execute a motor command depending on it
 */
 void set_peak(float* data){
 	float max_norm = MIN_VALUE_THRESHOLD;
@@ -179,17 +167,17 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 	//loop to fill the buffers
 	for(uint16_t i = 0 ; i < num_samples ; i+=4){
 		//construct an array of complex numbers. Put 0 to the imaginary part
-		micRight_cmplx_input[nb_samples] = (float)data[i + MIC_RIGHT];
+//		micRight_cmplx_input[nb_samples] = (float)data[i + MIC_RIGHT];
 		micLeft_cmplx_input[nb_samples] = (float)data[i + MIC_LEFT];
-		micBack_cmplx_input[nb_samples] = (float)data[i + MIC_BACK];
-		micFront_cmplx_input[nb_samples] = (float)data[i + MIC_FRONT];
+//		micBack_cmplx_input[nb_samples] = (float)data[i + MIC_BACK];
+//		micFront_cmplx_input[nb_samples] = (float)data[i + MIC_FRONT];
 
 		nb_samples++;
 
-		micRight_cmplx_input[nb_samples] = 0;
+//		micRight_cmplx_input[nb_samples] = 0;
 		micLeft_cmplx_input[nb_samples] = 0;
-		micBack_cmplx_input[nb_samples] = 0;
-		micFront_cmplx_input[nb_samples] = 0;
+//		micBack_cmplx_input[nb_samples] = 0;
+//		micFront_cmplx_input[nb_samples] = 0;
 
 		nb_samples++;
 
@@ -206,10 +194,10 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		*	This is an "In Place" function. 
 		*/
 
-		doFFT_optimized(FFT_SIZE, micRight_cmplx_input);
+//		doFFT_optimized(FFT_SIZE, micRight_cmplx_input);
 		doFFT_optimized(FFT_SIZE, micLeft_cmplx_input);
-		doFFT_optimized(FFT_SIZE, micFront_cmplx_input);
-		doFFT_optimized(FFT_SIZE, micBack_cmplx_input);
+//		doFFT_optimized(FFT_SIZE, micFront_cmplx_input);
+//		doFFT_optimized(FFT_SIZE, micBack_cmplx_input);
 
 		/*	Magnitude processing
 		*
@@ -218,10 +206,10 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		*	real numbers.
 		*
 		*/
-		arm_cmplx_mag_f32(micRight_cmplx_input, micRight_output, FFT_SIZE);
+//		arm_cmplx_mag_f32(micRight_cmplx_input, micRight_output, FFT_SIZE);
 		arm_cmplx_mag_f32(micLeft_cmplx_input, micLeft_output, FFT_SIZE);
-		arm_cmplx_mag_f32(micFront_cmplx_input, micFront_output, FFT_SIZE);
-		arm_cmplx_mag_f32(micBack_cmplx_input, micBack_output, FFT_SIZE);
+//		arm_cmplx_mag_f32(micFront_cmplx_input, micFront_output, FFT_SIZE);
+//		arm_cmplx_mag_f32(micBack_cmplx_input, micBack_output, FFT_SIZE);
 
 		//sends only one FFT result over 10 for 1 mic to not flood the computer
 		//sends to UART3

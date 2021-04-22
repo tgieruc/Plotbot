@@ -8,7 +8,7 @@
 #ifndef TOF_H_
 #define TOF_H_
 
-void tof_start(void);
+void smart_start(void);
 
 
 

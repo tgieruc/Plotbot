@@ -24,8 +24,14 @@
 *.lai
 *.la
 *.lib
+*.lst
 
 # Executables
+*.bin
+*.dmp
+*.hex
+*.map
+*.a
 *.exe
 *.out
 *.app
@@ -33,5 +39,3 @@
 *.size
 *.mem
 *.list
-Projet/miniprojet/Miniprojet/libssp.a
-Projet/miniprojet/Miniprojet/libssp_nonshared.a
