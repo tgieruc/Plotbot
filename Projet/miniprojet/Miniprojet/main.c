@@ -15,8 +15,8 @@
 #include <fft.h>
 #include <communications.h>
 #include <arm_math.h>
-#include <tof.h>
 #include "sensors/VL53L0X/VL53L0X.h"
+#include "smartmove.h"
 
 
 
@@ -76,7 +76,7 @@ int main(void)
     mic_start(&processAudioData);
     audioSeq_start();
 
-//    smart_start();
+//    smartmove_start();
 
     /* Infinite loop. */
     while (1) {

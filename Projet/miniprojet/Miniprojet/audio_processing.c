@@ -36,11 +36,13 @@ static uint8_t sequ_size = 0;
 
 bool is_same_freq(int8_t input_freq, int8_t match_freq);
 bool sequEnded(void);
-void print_sequ(void);
+void serial_print_sequ(void);
 void getSeq(void);
 
-
-void print_sequ(void){
+/*
+ * Print the received sequence over serial
+ */
+void serial_print_sequ(void){
 	chprintf((BaseSequentialStream *) &SD3, "\nSequ: [ ");
 	for (uint i = 0; i < sequ_size; ++i){
 		chprintf((BaseSequentialStream *) &SD3, "%d ", sequ[i]);
@@ -48,6 +50,9 @@ void print_sequ(void){
 	chprintf((BaseSequentialStream *) &SD3, "]\n");
 }
 
+/*
+ * Check if two frequences are the same, allowing a delta of 47Hz
+ */
 bool is_same_freq(int8_t input_freq, int8_t match_freq){
 	return ((input_freq - 1) <= match_freq && (input_freq + 1) >= match_freq);
 }
@@ -57,6 +62,10 @@ void waitForNextPeak(int8_t old_freq){
 		chThdYield();
 	}
 }
+
+/*
+ * Wait until it receives the start sequence
+ */
 void wait4startSequ(void){
     int8_t startSequence[] = {29, 32, 36, 29, 32, 44};
     int8_t old_freq = -1;
@@ -77,6 +86,9 @@ void wait4startSequ(void){
 	chprintf((BaseSequentialStream *) &SD3, "startSequ detected");
 }
 
+/*
+ * Check if it has received the end sequence
+ */
 bool sequEnded(void){
     int8_t endSequence[] = {36, 29, 32, 29};
     if (sequ_size <= 4) return false;
@@ -96,10 +108,13 @@ static THD_FUNCTION(ThdGetAudioSeq, arg) {
 
 	wait4startSequ();
 	getSeq();
-	print_sequ();
+	serial_print_sequ();
 	chprintf((BaseSequentialStream *) &SD3, "end\n\n");
 }
 
+/*
+ * Listen to the sequence and store it in the static array sequ
+ */
 void getSeq(void){
 	int8_t old_freq = 44;
 	while (!sequEnded()){
