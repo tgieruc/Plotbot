@@ -33,8 +33,8 @@ static THD_FUNCTION(VL53L0XThd, arg) {
 	status = VL53L0X_init(&device);
 
 	if(status == VL53L0X_ERROR_NONE){
-		VL53L0X_configAccuracy(&device, VL53L0X_DEFAULT_MODE);
-//		VL53L0X_configAccuracy(&device, VL53L0X_HIGH_ACCURACY);
+//		VL53L0X_configAccuracy(&device, VL53L0X_DEFAULT_MODE);
+		VL53L0X_configAccuracy(&device, VL53L0X_HIGH_ACCURACY);
 //		VL53L0X_configAccuracy(&device, VL53L0X_LONG_RANGE);
 	}
 	if(status == VL53L0X_ERROR_NONE){

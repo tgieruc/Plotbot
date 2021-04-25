@@ -21,12 +21,15 @@ int8_t get_peak(void);
 
 void audioSeq_start(void);
 
+void get_sequ(uint8_t *sequ_size_out, uint8_t *sequ_out);
+
+
 void processAudioData(int16_t *data, uint16_t num_samples);
 
 /*
 *	put the invoking thread into sleep until it can process the audio datas
 */
-void wait_audio_processing(void);
+void  wait_sequ_aquired(void);
 
 /*
 *	Returns the pointer to the BUFFER_NAME_t buffer asked

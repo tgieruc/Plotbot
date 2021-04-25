@@ -5,21 +5,21 @@
 #include <motors.h>
 #include <chthreads.h>
 #include <smartmove.h>
-
+#include <audio_processing.h>
 
 #define ANGLE2STEP 	3.7591706966f
-#define ANGLEMARGIN 20
+#define ANGLEMARGIN 10
 #define NORTH 		0
 #define EAST 		90
 #define SOUTH 		180
 #define WEST 		270
 
-#define TOF_NOISE_MARGIN 	3
-#define DIST2TUBE_MARGIN 	30
-#define DISTSENSORTUBE 		40
-#define TOF_REFRESH_RATE 	30
+#define TOF_NOISE_MARGIN 	6
+#define DIST2TUBE_MARGIN 	15
+#define DISTSENSORTUBE 		60
+#define TOF_REFRESH_RATE 	200 //ms
 #define BLIND_TURN_SPEED 	300
-#define SMART_TURN_SPEED 	200
+#define SMART_TURN_SPEED 	70
 
 static uint8_t absPosition[][2]  = {{0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {1,2}, {2,0}, {2,1}, {2,2}};
 
@@ -36,7 +36,7 @@ void smart_move(smart_info_t *smartinfo);
 uint16_t get_next_direction(int8_t deltaPosX, int8_t deltaPosY);
 void blind_turn(smart_info_t *smartinfo);
 void set_dist_to_tube(smart_info_t *smartinfo, uint8_t actualPosX, uint8_t actualPosY);
-
+void move_forward(smart_info_t *smartinfo);
 
 
 
@@ -45,26 +45,49 @@ static THD_FUNCTION(ThdSmartMove, arg) {
 
 	chRegSetThreadName(__FUNCTION__);
 	(void)arg;
+	uint8_t sequ[15];
+	uint8_t sequ_size = 0;
+	wait_sequ_aquired();
+	get_sequ(&sequ_size, sequ);
 
-	smart_info_t smartinfo;
-	smartinfo.actualDirection = EAST;
+//	chprintf((BaseSequentialStream *) &SD3, "\nSequ: [ ");
+//	for (uint i = 0; i < sequ_size; ++i){
+//		chprintf((BaseSequentialStream *) &SD3, "%d ", sequ[i]);
+//	}
+//	chprintf((BaseSequentialStream *) &SD3, "]\n");
+//	smart_info_t smartinfo;
+//	smartinfo.actualDirection = NORTH;
+//
+//
+//	for (uint8_t i = 0; i < sequ_size-1; ++i){
+//		get_smart_info(sequ[i],sequ[i+1],&smartinfo);
+//		smart_move(&smartinfo);
+//	}
 
-	uint8_t actualPos, nextPos;
-	actualPos = 2;
-	nextPos = 3;
 
-	get_smart_info(actualPos,nextPos,&smartinfo);
-	smart_move(&smartinfo);
 
     while(1){
-//    	chprintf((BaseSequentialStream *) &SD3, "dist %d \n",VL53L0X_get_dist_mm());
+    	chprintf((BaseSequentialStream *) &SD3, "dist %d \n",VL53L0X_get_dist_mm());
     }
 }
 
+/*
+ * Handle all the movement functions
+ */
 void smart_move(smart_info_t *smartinfo){
 	blind_turn(smartinfo);
   	smart_turn(smartinfo);
-//	move()
+	move_forward(smartinfo);
+}
+
+
+void move_forward(smart_info_t *smartinfo){
+	while (VL53L0X_get_dist_mm() > smartinfo->distToTube-100){
+		left_motor_set_speed(300);
+		right_motor_set_speed(300);
+	}
+	left_motor_set_speed(0);
+	right_motor_set_speed(0);
 }
 
 /*

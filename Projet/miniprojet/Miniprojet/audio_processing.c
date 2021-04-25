@@ -9,7 +9,7 @@
 
 
 //semaphore
-static BSEMAPHORE_DECL(readyForAudioProcessing, TRUE);
+static BSEMAPHORE_DECL(sequAquired, TRUE);
 
 //2 times FFT_SIZE because these arrays contain complex numbers (real + imaginary)
 static float micLeft_cmplx_input[2 * FFT_SIZE];
@@ -31,13 +31,15 @@ static float micBack_output[FFT_SIZE];
 
 
 static int8_t peak;
-static int8_t sequ[MAX_CASES];
-static uint8_t sequ_size = 0;
+//static uint8_t sequ[MAX_CASES];
+//static uint8_t sequ_size = 0;
+static uint8_t sequ[] = {5,2,3,6,9};
+static uint8_t sequ_size = 5;
 
 bool is_same_freq(int8_t input_freq, int8_t match_freq);
-bool sequEnded(void);
+bool sequ_ended(void);
 void serial_print_sequ(void);
-void getSeq(void);
+void record_sequ(void);
 
 /*
  * Print the received sequence over serial
@@ -57,7 +59,10 @@ bool is_same_freq(int8_t input_freq, int8_t match_freq){
 	return ((input_freq - 1) <= match_freq && (input_freq + 1) >= match_freq);
 }
 
-void waitForNextPeak(int8_t old_freq){
+/*
+ * Wait for the frequency to change
+ */
+void wait_for_next_peak(int8_t old_freq){
 	while (is_same_freq(peak, old_freq)) {
 		chThdYield();
 	}
@@ -66,14 +71,13 @@ void waitForNextPeak(int8_t old_freq){
 /*
  * Wait until it receives the start sequence
  */
-void wait4startSequ(void){
+void wait_for_start_sequ(void){
     int8_t startSequence[] = {29, 32, 36, 29, 32, 44};
     int8_t old_freq = -1;
-	wait_audio_processing();
 	uint8_t i = 0;
 	chprintf((BaseSequentialStream *) &SD3, "listening...\n");
 	while (i < sizeof startSequence / sizeof startSequence[0]){
-		waitForNextPeak(old_freq);
+		wait_for_next_peak(old_freq);
 		chprintf((BaseSequentialStream *) &SD3, "peak : %d\n",peak);
 		if (is_same_freq(peak,startSequence[i])){
 			old_freq = peak;
@@ -89,11 +93,11 @@ void wait4startSequ(void){
 /*
  * Check if it has received the end sequence
  */
-bool sequEnded(void){
+bool sequ_ended(void){
     int8_t endSequence[] = {36, 29, 32, 29};
     if (sequ_size <= 4) return false;
     for (uint8_t i = 0; i < sizeof endSequence / sizeof endSequence[0]; ++i){
-    	if (!is_same_freq(sequ[sequ_size-4+i],endSequence[i])){
+    	if (!is_same_freq(sequ[sequ_size-4+i], endSequence[i])){
     		return false;
     	}
     }
@@ -106,19 +110,21 @@ static THD_FUNCTION(ThdGetAudioSeq, arg) {
     chRegSetThreadName(__FUNCTION__);
     (void)arg;
 
-	wait4startSequ();
-	getSeq();
-	serial_print_sequ();
+//	wait_for_start_sequ();
+//	record_sequ();
+//	serial_print_sequ();
+
 	chprintf((BaseSequentialStream *) &SD3, "end\n\n");
+	chBSemSignal(&sequAquired);
 }
 
 /*
  * Listen to the sequence and store it in the static array sequ
  */
-void getSeq(void){
+void record_sequ(void){
 	int8_t old_freq = 44;
-	while (!sequEnded()){
-		waitForNextPeak(old_freq);
+	while (!sequ_ended()){
+		wait_for_next_peak(old_freq);
 		sequ[sequ_size] =  peak;
 		sequ_size++;
 		old_freq = peak;
@@ -154,6 +160,13 @@ void set_peak(float* data){
 
 int8_t get_peak(void){
 	return peak;
+}
+
+void get_sequ(uint8_t *sequ_size_out, uint8_t *sequ_out){
+	*sequ_size_out = sequ_size;
+	for (uint8_t i = 0; i < sequ_size; ++i){
+		sequ_out[i] = sequ[i];
+	}
 }
 
 
@@ -230,7 +243,6 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		//sends to UART3
 //		if(mustSend > 8){
 			//signals to send the result to the computer
-		chBSemSignal(&readyForAudioProcessing);
 //			mustSend = 0;
 //		}
 		nb_samples = 0;
@@ -242,8 +254,8 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 	}
 }
 
-void wait_audio_processing(void){
-	chBSemWait(&readyForAudioProcessing);
+void wait_sequ_aquired(void){
+	chBSemWait(&sequAquired);
 }
 
 float* get_audio_buffer_ptr(BUFFER_NAME_t name){
