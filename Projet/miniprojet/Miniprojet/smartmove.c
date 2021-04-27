@@ -6,6 +6,7 @@
 #include <chthreads.h>
 #include <smartmove.h>
 #include <audio_processing.h>
+#include <process_image.h>
 
 #define ANGLE2STEP 	3.7591706966f
 #define ANGLEMARGIN 10
@@ -16,10 +17,17 @@
 
 #define TOF_NOISE_MARGIN 	6
 #define DIST2TUBE_MARGIN 	15
-#define DISTSENSORTUBE 		60
+#define DISTSENSORTUBE 		20
 #define TOF_REFRESH_RATE 	200 //ms
 #define BLIND_TURN_SPEED 	300
 #define SMART_TURN_SPEED 	70
+
+#define KP_turn					1
+#define KP_forward 				1
+#define KI 						2	//must not be zero
+#define MAX_SUM_ERROR 			(MOTOR_SPEED_LIMIT/KI)
+
+#define MIDDLE_DCIM 320
 
 static uint8_t absPosition[][2]  = {{0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {1,2}, {2,0}, {2,1}, {2,2}};
 
@@ -31,7 +39,7 @@ typedef struct smart_info_t{
 
 
 void get_smart_info(uint8_t actualPos, uint8_t nextPos, smart_info_t *smartinfo);
-void smart_turn(smart_info_t *smartinfo);
+void smart_turn(void);
 void smart_move(smart_info_t *smartinfo);
 uint16_t get_next_direction(int8_t deltaPosX, int8_t deltaPosY);
 void blind_turn(smart_info_t *smartinfo);
@@ -50,19 +58,21 @@ static THD_FUNCTION(ThdSmartMove, arg) {
 	wait_sequ_aquired();
 	get_sequ(&sequ_size, sequ);
 
-//	chprintf((BaseSequentialStream *) &SD3, "\nSequ: [ ");
-//	for (uint i = 0; i < sequ_size; ++i){
-//		chprintf((BaseSequentialStream *) &SD3, "%d ", sequ[i]);
-//	}
-//	chprintf((BaseSequentialStream *) &SD3, "]\n");
-//	smart_info_t smartinfo;
-//	smartinfo.actualDirection = NORTH;
-//
-//
-//	for (uint8_t i = 0; i < sequ_size-1; ++i){
-//		get_smart_info(sequ[i],sequ[i+1],&smartinfo);
-//		smart_move(&smartinfo);
-//	}
+
+
+	chprintf((BaseSequentialStream *) &SD3, "\nSequ: [ ");
+	for (uint i = 0; i < sequ_size; ++i){
+		chprintf((BaseSequentialStream *) &SD3, "%d ", sequ[i]);
+	}
+	chprintf((BaseSequentialStream *) &SD3, "]\n");
+	smart_info_t smartinfo;
+	smartinfo.actualDirection = NORTH;
+
+
+	for (uint8_t i = 0; i < sequ_size-1; ++i){
+		get_smart_info(sequ[i],sequ[i+1],&smartinfo);
+		smart_move(&smartinfo);
+	}
 
 
 
@@ -75,17 +85,41 @@ static THD_FUNCTION(ThdSmartMove, arg) {
  * Handle all the movement functions
  */
 void smart_move(smart_info_t *smartinfo){
-	blind_turn(smartinfo);
-  	smart_turn(smartinfo);
+	if (smartinfo->angle != 0) {
+		blind_turn(smartinfo);
+	}
+  	smart_turn();
 	move_forward(smartinfo);
 }
 
 
 void move_forward(smart_info_t *smartinfo){
+
+	int16_t error = 0;
+	int16_t speed = 0;
+//	static int16_t sum_error = 0;
+
+
 	while (VL53L0X_get_dist_mm() > smartinfo->distToTube-100){
-		left_motor_set_speed(300);
-		right_motor_set_speed(300);
+		wait_position_acquired();
+		error = MIDDLE_DCIM - get_position_px();
+
+
+//		if(sum_error > MAX_SUM_ERROR){
+//			sum_error = MAX_SUM_ERROR;
+//		}else if(sum_error < -MAX_SUM_ERROR){
+//			sum_error = -MAX_SUM_ERROR;
+//		}
+
+		speed = error * KP_turn;
+
+		if (speed > 200) speed = 200;
+		if (speed < -200) speed = -200;
+
+		left_motor_set_speed(300 - speed);
+		right_motor_set_speed(300 + speed);
 	}
+
 	left_motor_set_speed(0);
 	right_motor_set_speed(0);
 }
@@ -146,45 +180,69 @@ void blind_turn(smart_info_t *smartinfo){
 	left_motor_set_pos(0);
 	right_motor_set_pos(0);
 
-	if (smartinfo->angle == 0) {
-		rotary_direction = 1;
-		step2do = ANGLE2STEP * 45;
-	} else {
-		rotary_direction = abs(smartinfo->angle) / smartinfo->angle;
-		step2do = ANGLE2STEP * (abs(smartinfo->angle  - ANGLEMARGIN));
-	}
+	rotary_direction = abs(smartinfo->angle) / smartinfo->angle;
+	step2do = ANGLE2STEP * (abs(smartinfo->angle));
 
 	while (abs(left_motor_get_pos()) < step2do){
 		left_motor_set_speed(BLIND_TURN_SPEED * rotary_direction);
 		right_motor_set_speed(-BLIND_TURN_SPEED * rotary_direction);
 	}
-
-	if (smartinfo->angle == 0) rotary_direction = -rotary_direction;
-	left_motor_set_speed(SMART_TURN_SPEED * rotary_direction);
-	right_motor_set_speed(-SMART_TURN_SPEED * rotary_direction);
+	left_motor_set_speed(0);
+	right_motor_set_speed(0);
+//	if (smartinfo->angle == 0) rotary_direction = -rotary_direction;
+//	left_motor_set_speed(SMART_TURN_SPEED * rotary_direction);
+//	right_motor_set_speed(-SMART_TURN_SPEED * rotary_direction);
 }
 
 /*
  * Turn according to the TOF sensor
  */
-void smart_turn(smart_info_t *smartinfo){
-	uint16_t min_dist = 10000;
-	uint16_t dist = VL53L0X_get_dist_mm();
-	systime_t time;
-	while (dist > smartinfo->distToTube + DIST2TUBE_MARGIN ||
-		   dist < smartinfo->distToTube - DIST2TUBE_MARGIN){
-		dist = VL53L0X_get_dist_mm();
-		chprintf((BaseSequentialStream *) &SD3, "expected : %d, got %d\n",smartinfo->distToTube,dist);
+void smart_turn(void){
+	int16_t error = MIDDLE_DCIM - get_position_px();
+	int16_t speed = 0;
+	static int16_t sum_error = 0;
+
+
+	while (abs (error) > 10){
+		wait_position_acquired();
+		sum_error += error;
+
+		if(sum_error > MAX_SUM_ERROR){
+			sum_error = MAX_SUM_ERROR;
+		}else if(sum_error < -MAX_SUM_ERROR){
+			sum_error = -MAX_SUM_ERROR;
+		}
+
+		speed = error * KP_turn;
+
+		if (speed > 200) speed = 200;
+		if (speed < -200) speed = -200;
+
+		left_motor_set_speed(-speed);
+		right_motor_set_speed(speed);
+		error = MIDDLE_DCIM - get_position_px();
 	}
-	while (dist < min_dist + TOF_NOISE_MARGIN){
-		chprintf((BaseSequentialStream *) &SD3, "boucle mindidst\n");
-		min_dist = dist;
-		time = chVTGetSystemTime();
-		chThdSleepUntilWindowed(time, time + MS2ST(TOF_REFRESH_RATE));
-		dist = VL53L0X_get_dist_mm();
-	}
+
 	left_motor_set_speed(0);
 	right_motor_set_speed(0);
+
+
+//	uint16_t min_dist = 10000;
+//	uint16_t dist = VL53L0X_get_dist_mm();
+//	systime_t time;
+//	while (dist > smartinfo->distToTube + DIST2TUBE_MARGIN ||
+//		   dist < smartinfo->distToTube - DIST2TUBE_MARGIN){
+//		dist = VL53L0X_get_dist_mm();
+//		chprintf((BaseSequentialStream *) &SD3, "expected : %d, got %d\n",smartinfo->distToTube,dist);
+//	}
+//	while (dist < min_dist + TOF_NOISE_MARGIN){
+//		chprintf((BaseSequentialStream *) &SD3, "boucle mindidst\n");
+//		min_dist = dist;
+//		time = chVTGetSystemTime();
+//		chThdSleepUntilWindowed(time, time + MS2ST(TOF_REFRESH_RATE));
+//		dist = VL53L0X_get_dist_mm();
+//	}
+
 }
 
 

@@ -16,6 +16,7 @@ static float position_px = 0;
 
 //semaphore
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
+static BSEMAPHORE_DECL(position_ready_sem, TRUE);
 
 static uint8_t min_val(uint8_t image[]){
 	uint8_t small = 255;
@@ -53,7 +54,7 @@ static void image_info (uint8_t image[],uint16_t *width, uint16_t *position){
 				}else{
 					if(abs(tempposition-IMAGE_BUFFER_SIZE/2) < abs(*width-IMAGE_BUFFER_SIZE/2)){//prend la barre la plus grande
 						*width = tempwidth;
-						*position = tempposition;
+						*position = tempposition-tempwidth/2;
 					}
 				}
 			}
@@ -126,16 +127,20 @@ static THD_FUNCTION(ProcessImage, arg) {
 		for (int i=0 ; i < IMAGE_BUFFER_SIZE; i++){
 			image[i] = *(img_buff_ptr+2*i) >> 3  ;
 		}
-		SendUint8ToComputer(image, IMAGE_BUFFER_SIZE);
+//		SendUint8ToComputer(image, IMAGE_BUFFER_SIZE);
 
 		image_info(image,&width,&position);
-		chprintf((BaseSequentialStream *) &SDU1, "position %d \n", position - IMAGE_BUFFER_SIZE/2);
+		position_px = position;
+//		chprintf((BaseSequentialStream *) &SDU1, "position %d \n", position - IMAGE_BUFFER_SIZE/2);
 
+		chBSemSignal(&position_ready_sem);
 //		chprintf((BaseSequentialStream *)&SDU1, "width = %d px position = %d px distance = %f cm\n",width,position-width/2,distance_cm);
     }
 }
 
-
+void wait_position_acquired(void){
+	chBSemWait(&position_ready_sem);
+}
 
 float get_position_px(void){
 	return position_px;

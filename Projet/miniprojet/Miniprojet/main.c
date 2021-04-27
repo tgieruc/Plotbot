@@ -83,11 +83,9 @@ int main(void)
 
     //starts the microphones processing thread.
     //it calls the callback given in parameter when samples are ready
-//    mic_start(&processAudioData);
-//    audioSeq_start();
-	process_image_start();
+po
 
-//    smartmove_start();
+    smartmove_start();
 
     /* Infinite loop. */
     while (1) {
