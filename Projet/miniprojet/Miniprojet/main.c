@@ -14,9 +14,9 @@
 #include <process_image.h>
 #include <audio_processing.h>
 #include <fft.h>
-#include <communications.h>
 #include <arm_math.h>
 #include "sensors/VL53L0X/VL53L0X.h"
+#include "sensors/proximity.h"
 #include "smartmove.h"
 #include <camera/po8030.h>
 
@@ -58,6 +58,9 @@ static void timer12_start(void){
 }
 
 
+messagebus_t bus;
+MUTEX_DECL(bus_lock);
+CONDVAR_DECL(bus_condvar);
 
 int main(void)
 {
@@ -65,6 +68,8 @@ int main(void)
     halInit();
     chSysInit();
     mpu_init();
+
+    messagebus_init(&bus, &bus_lock, &bus_condvar);
 
     //starts the serial communication
     serial_start();
@@ -75,26 +80,28 @@ int main(void)
     //inits the motors
     motors_init();
 
+    //inits the camera
     dcmi_start();
 	po8030_start();
 
+	//inits the TOF
     VL53L0X_start();
 
+    //inits the proximity sensors
+    proximity_start();
 
-    //starts the microphones processing thread.
-    //it calls the callback given in parameter when samples are ready
-po
+
+
+    mic_start(&processAudioData);
+    audioSeq_start();
+	process_image_start();
 
     smartmove_start();
 
+
     /* Infinite loop. */
     while (1) {
-        //waits until a result must be sent to the computer
         chThdSleepMilliseconds(1000);
-
-        //we copy the buffer to avoid conflicts
-//        arm_copy_f32(get_audio_buffer_ptr(LEFT_OUTPUT), send_tab, FFT_SIZE);
-//        SendFloatToComputer((BaseSequentialStream *) &SD3, send_tab, FFT_SIZE);
     }
 }
 

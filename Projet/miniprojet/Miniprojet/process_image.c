@@ -5,13 +5,12 @@
 
 #include <main.h>
 #include <camera/po8030.h>
-
 #include <process_image.h>
 
 #define MARGIN 50
 
 
-static float position_px = 0;
+static uint16_t position_px = 0;
 
 
 //semaphore
@@ -77,21 +76,15 @@ static THD_FUNCTION(CaptureImage, arg) {
 
 
     while(1){
-//    	systime_t t1 ;
-//    	t1 = chVTGetSystemTime();
-//		chprintf((BaseSequentialStream *) &SD3, "capture start\n ");
+
 
     	//starts a capture
 		dcmi_capture_start();
-//		chprintf((BaseSequentialStream *) &SD3, "wait image ready\n ");
 
 		//waits for the capture to be done
 		wait_image_ready();
 		//signals an image has been captured
 		chBSemSignal(&image_ready_sem);
-
-//		chprintf((BaseSequentialStream *)&SDU1, "time = %d \n width = %d px\n position = %d px\n", chVTGetSystemTime()-t);
-
     }
 }
 
@@ -115,7 +108,6 @@ static THD_FUNCTION(ProcessImage, arg) {
 
     	//waits until an image has been captured
         chBSemWait(&image_ready_sem);
-//		chprintf((BaseSequentialStream *) &SD3, "sem received \n ");
 
 		//gets the pointer to the array filled with the last image in RGB565
 		img_buff_ptr = dcmi_get_last_image_ptr();
@@ -131,10 +123,8 @@ static THD_FUNCTION(ProcessImage, arg) {
 
 		image_info(image,&width,&position);
 		position_px = position;
-//		chprintf((BaseSequentialStream *) &SDU1, "position %d \n", position - IMAGE_BUFFER_SIZE/2);
 
 		chBSemSignal(&position_ready_sem);
-//		chprintf((BaseSequentialStream *)&SDU1, "width = %d px position = %d px distance = %f cm\n",width,position-width/2,distance_cm);
     }
 }
 
@@ -142,7 +132,7 @@ void wait_position_acquired(void){
 	chBSemWait(&position_ready_sem);
 }
 
-float get_position_px(void){
+uint16_t get_position_px(void){
 	return position_px;
 }
 

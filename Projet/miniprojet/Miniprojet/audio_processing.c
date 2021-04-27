@@ -3,7 +3,6 @@
 
 #include <audio/microphone.h>
 #include <audio_processing.h>
-#include <communications.h>
 #include <fft.h>
 #include <arm_math.h>
 
@@ -11,16 +10,10 @@
 //semaphore
 static BSEMAPHORE_DECL(sequAquired, TRUE);
 
-//2 times FFT_SIZE because these arrays contain complex numbers (real + imaginary)
-static float micLeft_cmplx_input[2 * FFT_SIZE];
-static float micRight_cmplx_input[2 * FFT_SIZE];
+//2 times FFT_SIZE because this array contain complex numbers (real + imaginary)
 static float micFront_cmplx_input[2 * FFT_SIZE];
-static float micBack_cmplx_input[2 * FFT_SIZE];
-//Arrays containing the computed magnitude of the complex numbers
-static float micLeft_output[FFT_SIZE];
-static float micRight_output[FFT_SIZE];
+//Array containing the computed magnitude of the complex numbers
 static float micFront_output[FFT_SIZE];
-static float micBack_output[FFT_SIZE];
 
 #define MIN_VALUE_THRESHOLD	10000 
 
@@ -28,9 +21,9 @@ static float micBack_output[FFT_SIZE];
 #define MAX_FREQ		50	//we don't analyze after this index to not use resources for nothing
 
 #define MAX_CASES 15
+#define NO_PEAK 255
 
-
-static int8_t peak;
+static uint8_t frequ;
 //static uint8_t sequ[MAX_CASES];
 //static uint8_t sequ_size = 0;
 static uint8_t sequ[] = {5,2,3,6,9};
@@ -63,7 +56,7 @@ bool is_same_freq(int8_t input_freq, int8_t match_freq){
  * Wait for the frequency to change
  */
 void wait_for_next_peak(int8_t old_freq){
-	while (is_same_freq(peak, old_freq)) {
+	while (is_same_freq(frequ, old_freq)) {
 		chThdYield();
 	}
 }
@@ -72,18 +65,18 @@ void wait_for_next_peak(int8_t old_freq){
  * Wait until it receives the start sequence
  */
 void wait_for_start_sequ(void){
-    int8_t startSequence[] = {29, 32, 36, 29, 32, 44};
-    int8_t old_freq = -1;
+    uint8_t startSequence[] = {29, 32, 36, 29, 32, 44};
+    uint8_t old_freq = NO_PEAK;
 	uint8_t i = 0;
 	chprintf((BaseSequentialStream *) &SD3, "listening...\n");
 	while (i < sizeof startSequence / sizeof startSequence[0]){
 		wait_for_next_peak(old_freq);
-		chprintf((BaseSequentialStream *) &SD3, "peak : %d\n",peak);
-		if (is_same_freq(peak,startSequence[i])){
-			old_freq = peak;
+		chprintf((BaseSequentialStream *) &SD3, "frequ : %d\n",frequ);
+		if (is_same_freq(frequ,startSequence[i])){
+			old_freq = frequ;
 			i++;
 		} else {
-			old_freq = -1;
+			old_freq = NO_PEAK;
 			i = 0;
 		}
 	}
@@ -94,7 +87,7 @@ void wait_for_start_sequ(void){
  * Check if it has received the end sequence
  */
 bool sequ_ended(void){
-    int8_t endSequence[] = {36, 29, 32, 29};
+    uint8_t endSequence[] = {36, 29, 32, 29};
     if (sequ_size <= 4) return false;
     for (uint8_t i = 0; i < sizeof endSequence / sizeof endSequence[0]; ++i){
     	if (!is_same_freq(sequ[sequ_size-4+i], endSequence[i])){
@@ -125,10 +118,10 @@ void record_sequ(void){
 	int8_t old_freq = 44;
 	while (!sequ_ended()){
 		wait_for_next_peak(old_freq);
-		sequ[sequ_size] =  peak;
+		sequ[sequ_size] =  frequ;
 		sequ_size++;
-		old_freq = peak;
-		chprintf((BaseSequentialStream *) &SD3, "peak %d : %d\n",sequ_size,sequ[sequ_size-1]);
+		old_freq = frequ;
+		chprintf((BaseSequentialStream *) &SD3, "frequ %d : %d\n",sequ_size,sequ[sequ_size-1]);
 	}
 	sequ_size -= 4;
 	for (uint8_t i = 0; i < sequ_size; ++i){
@@ -146,21 +139,18 @@ void audioSeq_start(void){
 */
 void set_peak(float* data){
 	float max_norm = MIN_VALUE_THRESHOLD;
-	int8_t max_norm_index = -1;
+	uint8_t max_norm_index = NO_PEAK;
 
-	//search for the highest peak
-	for(uint16_t i = MIN_FREQ ; i <= MAX_FREQ ; i++){
+	//search for the highest frequ
+	for(uint8_t i = MIN_FREQ ; i <= MAX_FREQ ; i++){
 		if(data[i] > max_norm){
 			max_norm = data[i];
 			max_norm_index = i;
 		}
 	}
-	peak = max_norm_index;
+	frequ = max_norm_index;
 }
 
-int8_t get_peak(void){
-	return peak;
-}
 
 void get_sequ(uint8_t *sequ_size_out, uint8_t *sequ_out){
 	*sequ_size_out = sequ_size;
@@ -195,17 +185,11 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 	//loop to fill the buffers
 	for(uint16_t i = 0 ; i < num_samples ; i+=4){
 		//construct an array of complex numbers. Put 0 to the imaginary part
-//		micRight_cmplx_input[nb_samples] = (float)data[i + MIC_RIGHT];
-		micLeft_cmplx_input[nb_samples] = (float)data[i + MIC_LEFT];
-//		micBack_cmplx_input[nb_samples] = (float)data[i + MIC_BACK];
-//		micFront_cmplx_input[nb_samples] = (float)data[i + MIC_FRONT];
+		micFront_cmplx_input[nb_samples] = (float)data[i + MIC_FRONT];
 
 		nb_samples++;
 
-//		micRight_cmplx_input[nb_samples] = 0;
-		micLeft_cmplx_input[nb_samples] = 0;
-//		micBack_cmplx_input[nb_samples] = 0;
-//		micFront_cmplx_input[nb_samples] = 0;
+		micFront_cmplx_input[nb_samples] = 0;
 
 		nb_samples++;
 
@@ -222,10 +206,7 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		*	This is an "In Place" function. 
 		*/
 
-//		doFFT_optimized(FFT_SIZE, micRight_cmplx_input);
-		doFFT_optimized(FFT_SIZE, micLeft_cmplx_input);
-//		doFFT_optimized(FFT_SIZE, micFront_cmplx_input);
-//		doFFT_optimized(FFT_SIZE, micBack_cmplx_input);
+		doFFT_optimized(FFT_SIZE, micFront_cmplx_input);
 
 		/*	Magnitude processing
 		*
@@ -234,23 +215,12 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		*	real numbers.
 		*
 		*/
-//		arm_cmplx_mag_f32(micRight_cmplx_input, micRight_output, FFT_SIZE);
-		arm_cmplx_mag_f32(micLeft_cmplx_input, micLeft_output, FFT_SIZE);
-//		arm_cmplx_mag_f32(micFront_cmplx_input, micFront_output, FFT_SIZE);
-//		arm_cmplx_mag_f32(micBack_cmplx_input, micBack_output, FFT_SIZE);
+		arm_cmplx_mag_f32(micFront_cmplx_input, micFront_output, FFT_SIZE);
 
-		//sends only one FFT result over 10 for 1 mic to not flood the computer
-		//sends to UART3
-//		if(mustSend > 8){
-			//signals to send the result to the computer
-//			mustSend = 0;
-//		}
+
 		nb_samples = 0;
-//		mustSend++;
 
-		set_peak(micLeft_output);
-//        SendFloatToComputer((BaseSequentialStream *) &SD3, send_tab, FFT_SIZE);
-
+		set_peak(micFront_output);
 	}
 }
 
@@ -258,32 +228,3 @@ void wait_sequ_aquired(void){
 	chBSemWait(&sequAquired);
 }
 
-float* get_audio_buffer_ptr(BUFFER_NAME_t name){
-	if(name == LEFT_CMPLX_INPUT){
-		return micLeft_cmplx_input;
-	}
-	else if (name == RIGHT_CMPLX_INPUT){
-		return micRight_cmplx_input;
-	}
-	else if (name == FRONT_CMPLX_INPUT){
-		return micFront_cmplx_input;
-	}
-	else if (name == BACK_CMPLX_INPUT){
-		return micBack_cmplx_input;
-	}
-	else if (name == LEFT_OUTPUT){
-		return micLeft_output;
-	}
-	else if (name == RIGHT_OUTPUT){
-		return micRight_output;
-	}
-	else if (name == FRONT_OUTPUT){
-		return micFront_output;
-	}
-	else if (name == BACK_OUTPUT){
-		return micBack_output;
-	}
-	else{
-		return NULL;
-	}
-}
