@@ -26,7 +26,7 @@ static float micFront_output[FFT_SIZE];
 static uint8_t frequ;
 //static uint8_t sequ[MAX_CASES];
 //static uint8_t sequ_size = 0;
-static uint8_t sequ[] = {5,2,3,6,9};
+static uint8_t sequ[] = {1,4,7,4,1};
 static uint8_t sequ_size = 5;
 
 bool is_same_freq(int8_t input_freq, int8_t match_freq);

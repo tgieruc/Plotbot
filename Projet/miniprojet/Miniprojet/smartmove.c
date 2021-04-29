@@ -17,15 +17,16 @@
 
 #define DIST_SENSOR_TUBE 	60
 #define BLIND_TURN_SPEED 	300
-#define CENTERING_SPEED 	200
-
+#define CENTERING_SPEED 	120
+#define FORWARD_SPEED		500
+#define ERROR_MARGIN		10
 #define SENSORS_FRONT_RIGHT 	0
 #define SENSORS_FRONT_LEFT 	 	7
 #define CLOSE_DIST				340
-#define KP_TURN					1
+#define KP_TURN					0.3
 #define KP_FORWARD 				1
-#define KI 						2	//must not be zero
-#define MAX_SUM_ERROR 			(MOTOR_SPEED_LIMIT/KI)
+#define KI 						0.2	//must not be zero
+#define MAX_SUM_ERROR 			50
 
 #define MIDDLE_DCIM 320
 
@@ -138,6 +139,9 @@ void get_smart_info(uint8_t actualPos, uint8_t nextPos, smartinfo_t *smartinfo){
 	smartinfo->angle = nextDirection - smartinfo->actual_direction;
 	smartinfo->actual_direction = nextDirection;
 
+	if (smartinfo->angle ==  270) smartinfo->angle = -90;
+	if (smartinfo->angle == -270) smartinfo->angle =  90;
+
 	set_dist_to_tube(smartinfo, absPosition[actualPos-1][0], absPosition[actualPos-1][1]);
 }
 
@@ -184,13 +188,13 @@ void blind_turn(smartinfo_t *smartinfo){
  * Turn according to the TOF sensor
  */
 void centering(void){
-	int16_t error = MIDDLE_DCIM - get_position_px();
-	int16_t speed = 0;
-	static int16_t sum_error = 0;
+	float error = MIDDLE_DCIM - get_position_px();
+	float speed = 0;
+	float sum_error = 0;
 	chprintf((BaseSequentialStream *) &SD3, "smartturn \n");
 
 
-	while (abs (error) > 4){
+	while (abs (error) > ERROR_MARGIN){
 		wait_position_acquired();
 		sum_error += error;
 
@@ -200,10 +204,10 @@ void centering(void){
 			sum_error = -MAX_SUM_ERROR;
 		}
 
-		speed = error * KP_TURN;
+		speed = error * KP_TURN + sum_error*KI;
 
-		if (speed > 200) speed = 200;
-		if (speed < -200) speed = -200;
+		if (speed > CENTERING_SPEED) speed = CENTERING_SPEED;
+		if (speed < -CENTERING_SPEED) speed = -CENTERING_SPEED;
 
 		left_motor_set_speed(-speed);
 		right_motor_set_speed(speed);
@@ -218,29 +222,9 @@ void centering(void){
  * Goes forward and uses PI to stay centered on the line
  */
 void move_forward(smartinfo_t *smartinfo){
-
-	int16_t error = 0;
-	int16_t speed = 0;
-//	static int16_t sum_error = 0;
-
 	while (!must_stop(smartinfo)) {
-		wait_position_acquired();
-		error = MIDDLE_DCIM - get_position_px();
-
-
-//		if(sum_error > MAX_SUM_ERROR){
-//			sum_error = MAX_SUM_ERROR;
-//		}else if(sum_error < -MAX_SUM_ERROR){
-//			sum_error = -MAX_SUM_ERROR;
-//		}
-
-		speed = error * KP_FORWARD;
-
-		if (speed > CENTERING_SPEED) speed = CENTERING_SPEED;
-		if (speed < -CENTERING_SPEED) speed = -CENTERING_SPEED;
-
-		left_motor_set_speed(300 - speed);
-		right_motor_set_speed(300 + speed);
+		left_motor_set_speed(FORWARD_SPEED);
+		right_motor_set_speed(FORWARD_SPEED);
 	}
 
 	left_motor_set_speed(0);

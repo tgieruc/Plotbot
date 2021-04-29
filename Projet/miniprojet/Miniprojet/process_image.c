@@ -7,8 +7,8 @@
 #include <camera/po8030.h>
 #include <process_image.h>
 
-#define MARGIN 50
-
+#define MARGIN 150
+#define FILTER 30
 
 static uint16_t position_px = 0;
 
@@ -48,7 +48,7 @@ static void image_info (uint8_t image[],uint16_t *width, uint16_t *position){
 				tempposition = i;//dernier pixel de la ligne
 			}
 			else if (tempwidth != 0){
-				if (tempwidth < 5){//filtre passe haut
+				if (tempwidth < FILTER){//filtre passe haut
 					tempwidth  = 0;
 				}else{
 					if(abs(tempposition-IMAGE_BUFFER_SIZE/2) < abs(*width-IMAGE_BUFFER_SIZE/2)){//prend la barre la plus grande
