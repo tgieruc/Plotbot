@@ -24,10 +24,10 @@ static float micFront_output[FFT_SIZE];
 #define NO_PEAK 255
 
 static uint8_t frequ;
-//static uint8_t sequ[MAX_CASES];
-//static uint8_t sequ_size = 0;
-static uint8_t sequ[] = {1,4,7,4,1};
-static uint8_t sequ_size = 5;
+static uint8_t sequ[MAX_CASES];
+static uint8_t sequ_size = 0;
+//static uint8_t sequ[] = {1,4,7,4,1};
+//static uint8_t sequ_size = 5;
 
 bool is_same_freq(int8_t input_freq, int8_t match_freq);
 bool sequ_ended(void);
@@ -103,9 +103,9 @@ static THD_FUNCTION(ThdGetAudioSeq, arg) {
     chRegSetThreadName(__FUNCTION__);
     (void)arg;
 
-//	wait_for_start_sequ();
-//	record_sequ();
-//	serial_print_sequ();
+	wait_for_start_sequ();
+	record_sequ();
+	serial_print_sequ();
 
 	chprintf((BaseSequentialStream *) &SD3, "end\n\n");
 	chBSemSignal(&sequAquired);

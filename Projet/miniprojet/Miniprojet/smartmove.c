@@ -9,7 +9,7 @@
 #include <audio_processing.h>
 #include <process_image.h>
 
-#define ANGLE2STEP 	3.7591706966f
+#define ANGLE2STEP 	3.6f
 #define NORTH 		0
 #define EAST 		90
 #define SOUTH 		180
@@ -51,7 +51,7 @@ bool must_stop(smartinfo_t *smartinfo);
 uint16_t get_next_direction(int8_t deltaPosX, int8_t deltaPosY);
 
 
-static THD_WORKING_AREA(waThdSmartMove, 1024);
+static THD_WORKING_AREA(waThdSmartMove, 512);
 static THD_FUNCTION(ThdSmartMove, arg) {
 
 	chRegSetThreadName(__FUNCTION__);
