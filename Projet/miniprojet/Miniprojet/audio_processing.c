@@ -5,6 +5,7 @@
 #include <audio_processing.h>
 #include <fft.h>
 #include <arm_math.h>
+#include <leds_animations.h>
 
 
 //semaphore
@@ -20,11 +21,10 @@ static float micFront_output[FFT_SIZE];
 #define MIN_FREQ		10	//we don't analyze before this index to not use resources for nothing
 #define MAX_FREQ		50	//we don't analyze after this index to not use resources for nothing
 
-#define MAX_CASES 15
-#define NO_PEAK 255
+#define NO_PEAK -1
 
-static uint8_t frequ;
-static uint8_t sequ[MAX_CASES];
+static int8_t frequ;
+static int8_t sequ[MAX_MOVES];
 static uint8_t sequ_size = 0;
 //static uint8_t sequ[] = {1,4,7,4,1};
 //static uint8_t sequ_size = 5;
@@ -65,8 +65,8 @@ void wait_for_next_peak(int8_t old_freq){
  * Wait until it receives the start sequence
  */
 void wait_for_start_sequ(void){
-    uint8_t startSequence[] = {29, 32, 36, 29, 32, 44};
-    uint8_t old_freq = NO_PEAK;
+    int8_t startSequence[] = {29, 32, 36, 29, 32, 44};
+    int8_t old_freq = NO_PEAK;
 	uint8_t i = 0;
 	chprintf((BaseSequentialStream *) &SD3, "listening...\n");
 	while (i < sizeof startSequence / sizeof startSequence[0]){
@@ -87,7 +87,7 @@ void wait_for_start_sequ(void){
  * Check if it has received the end sequence
  */
 bool sequ_ended(void){
-    uint8_t endSequence[] = {36, 29, 32, 29};
+    int8_t endSequence[] = {44, 29, 32, 29};
     if (sequ_size <= 4) return false;
     for (uint8_t i = 0; i < sizeof endSequence / sizeof endSequence[0]; ++i){
     	if (!is_same_freq(sequ[sequ_size-4+i], endSequence[i])){
@@ -103,7 +103,9 @@ static THD_FUNCTION(ThdGetAudioSeq, arg) {
     chRegSetThreadName(__FUNCTION__);
     (void)arg;
 
+    set_led_state(IDLE);
 	wait_for_start_sequ();
+	set_led_state(LISTENING);
 	record_sequ();
 	serial_print_sequ();
 
@@ -139,7 +141,7 @@ void audioSeq_start(void){
 */
 void set_peak(float* data){
 	float max_norm = MIN_VALUE_THRESHOLD;
-	uint8_t max_norm_index = NO_PEAK;
+	int8_t max_norm_index = NO_PEAK;
 
 	//search for the highest frequ
 	for(uint8_t i = MIN_FREQ ; i <= MAX_FREQ ; i++){
@@ -152,7 +154,7 @@ void set_peak(float* data){
 }
 
 
-void get_sequ(uint8_t *sequ_size_out, uint8_t *sequ_out){
+void get_sequ(uint8_t *sequ_size_out, int8_t *sequ_out){
 	*sequ_size_out = sequ_size;
 	for (uint8_t i = 0; i < sequ_size; ++i){
 		sequ_out[i] = sequ[i];

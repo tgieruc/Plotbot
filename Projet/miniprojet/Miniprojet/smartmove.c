@@ -8,6 +8,8 @@
 #include <smartmove.h>
 #include <audio_processing.h>
 #include <process_image.h>
+#include <audio/play_sound_file.h>
+#include <leds_animations.h>
 
 #define ANGLE2STEP 	3.6f
 #define NORTH 		0
@@ -15,7 +17,7 @@
 #define SOUTH 		180
 #define WEST 		270
 
-#define DIST_SENSOR_TUBE 	60
+#define DIST_SENSOR_TUBE 	40
 #define BLIND_TURN_SPEED 	300
 #define CENTERING_SPEED 	120
 #define FORWARD_SPEED		500
@@ -56,12 +58,20 @@ static THD_FUNCTION(ThdSmartMove, arg) {
 
 	chRegSetThreadName(__FUNCTION__);
 	(void)arg;
-	uint8_t sequ[15];
+	int8_t sequ[MAX_MOVES];
 	uint8_t sequ_size = 0;
 
 
 	wait_sequ_aquired();
 	get_sequ(&sequ_size, sequ);
+	chThdSleepMilliseconds(500);
+	setSoundFileVolume(50);
+//	chSysLock();
+	playSoundFile("letsgo.wav",SF_SIMPLE_PLAY);
+	waitSoundFileHasFinished();
+//	chSysUnlock();
+	set_led_state(MOVING);
+
 
 	chprintf((BaseSequentialStream *) &SD3, "\nSequ: [ ");
 	for (uint i = 0; i < sequ_size; ++i){
@@ -80,6 +90,7 @@ static THD_FUNCTION(ThdSmartMove, arg) {
 
 		smart_move(&smartinfo);
 	}
+	set_led_state(DONE);
 }
 
 /*

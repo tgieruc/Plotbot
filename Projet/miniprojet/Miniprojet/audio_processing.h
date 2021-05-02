@@ -3,7 +3,7 @@
 
 
 #define FFT_SIZE 	1024
-
+#define MAX_MOVES 	20
 typedef enum {
 	//2 times FFT_SIZE because these arrays contain complex numbers (real + imaginary)
 	LEFT_CMPLX_INPUT = 0,
@@ -20,7 +20,7 @@ typedef enum {
 
 void audioSeq_start(void);
 
-void get_sequ(uint8_t *sequ_size_out, uint8_t *sequ_out);
+void get_sequ(uint8_t *sequ_size_out, int8_t *sequ_out);
 
 void processAudioData(int16_t *data, uint16_t num_samples);
 

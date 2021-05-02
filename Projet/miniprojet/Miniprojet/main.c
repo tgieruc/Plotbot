@@ -10,6 +10,11 @@
 #include <chprintf.h>
 #include <motors.h>
 #include <audio/microphone.h>
+#include <audio/play_sound_file.h>
+#include <audio/audio_thread.h>
+#include <sdio.h>
+#include <leds_animations.h>
+//#include <leds.h>
 
 #include <process_image.h>
 #include <audio_processing.h>
@@ -64,6 +69,10 @@ CONDVAR_DECL(bus_condvar);
 
 int main(void)
 {
+	set_rgb_led(0, 0, 0, 10);
+	set_rgb_led(1, 0, 0, 10);
+	set_rgb_led(2, 0, 0, 10);
+	set_rgb_led(3, 0, 0, 10);
 
     halInit();
     chSysInit();
@@ -84,16 +93,27 @@ int main(void)
     dcmi_start();
 	po8030_start();
 
+	//inits SD card
+	sdio_start();
+
+	//init dac
+	dac_start();
+
+	//inits the speaker
+	playSoundFileStart();
+
 	//inits the TOF
     VL53L0X_start();
 
     //inits the proximity sensors
     proximity_start();
 
-
+    leds_animations_start();
 
     mic_start(&processAudioData);
+
     audioSeq_start();
+
 	process_image_start();
 
     smartmove_start();
