@@ -37,9 +37,9 @@ static uint8_t absPosition[][2]  = {{0,0}, {0,1}, {0,2},
 									{2,0}, {2,1}, {2,2}};
 
 typedef struct smartinfo_t{
-	int16_t actual_direction;
-	int16_t angle;
-	uint16_t dist_to_tube;
+	int16_t  actual_direction;
+	int16_t  angle;
+	uint16_t dist_to_wall;
 }smartinfo_t;
 
 
@@ -47,7 +47,7 @@ void get_smart_info(uint8_t actualPos, uint8_t nextPos, smartinfo_t *smartinfo);
 void centering(void);
 void smart_move(smartinfo_t *smartinfo);
 void blind_turn(smartinfo_t *smartinfo);
-void set_dist_to_tube(smartinfo_t *smartinfo, uint8_t actualPosX, uint8_t actualPosY);
+void set_dist_to_wall(smartinfo_t *smartinfo, uint8_t actualPosX, uint8_t actualPosY);
 void move_forward(smartinfo_t *smartinfo);
 bool must_stop(smartinfo_t *smartinfo);
 uint16_t get_next_direction(int8_t deltaPosX, int8_t deltaPosY);
@@ -60,34 +60,21 @@ static THD_FUNCTION(ThdSmartMove, arg) {
 	(void)arg;
 	int8_t sequ[MAX_MOVES];
 	uint8_t sequ_size = 0;
-
+	smartinfo_t smartinfo;
 
 	wait_sequ_aquired();
 	get_sequ(&sequ_size, sequ);
 	chThdSleepMilliseconds(500);
 	setSoundFileVolume(50);
-//	chSysLock();
 	playSoundFile("letsgo.wav",SF_SIMPLE_PLAY);
 	waitSoundFileHasFinished();
-//	chSysUnlock();
+
 	set_led_state(MOVING);
 
-
-	chprintf((BaseSequentialStream *) &SD3, "\nSequ: [ ");
-	for (uint i = 0; i < sequ_size; ++i){
-		chprintf((BaseSequentialStream *) &SD3, "%d ", sequ[i]);
-	}
-	chprintf((BaseSequentialStream *) &SD3, "]\n");
-	smartinfo_t smartinfo;
 	smartinfo.actual_direction = NORTH;
-
 
 	for (uint8_t i = 0; i < sequ_size-1; ++i){
 		get_smart_info(sequ[i],sequ[i+1],&smartinfo);
-		chprintf((BaseSequentialStream *)&SD3,
-			      "smartinfo : angle %d, dist %d\n",
-				  smartinfo.angle, smartinfo.dist_to_tube);
-
 		smart_move(&smartinfo);
 	}
 	set_led_state(DONE);
@@ -105,23 +92,24 @@ void smart_move(smartinfo_t *smartinfo){
 }
 
 /*
- * Check if the robot must continue to go forward
+ * Check if the robot must stop
  */
 bool must_stop(smartinfo_t *smartinfo){
     messagebus_topic_t *prox_topic = messagebus_find_topic_blocking(&bus, "/proximity");
 
     proximity_msg_t prox_values;
 
-    if (smartinfo->dist_to_tube > 200){
-    	return (VL53L0X_get_dist_mm() < smartinfo->dist_to_tube-100);
+    if (smartinfo->dist_to_wall > 200){
+    	return (VL53L0X_get_dist_mm() < smartinfo->dist_to_wall);
     }
     if (VL53L0X_get_dist_mm() > 60) {
     	return false;
     }
 
 	messagebus_topic_wait(prox_topic, &prox_values, sizeof(prox_values));
+	uint16_t mean_prox = (prox_values.delta[SENSORS_FRONT_RIGHT] + prox_values.delta[SENSORS_FRONT_LEFT]) / 2;
 
-    return ((prox_values.delta[SENSORS_FRONT_RIGHT] + prox_values.delta[SENSORS_FRONT_LEFT])/2 > CLOSE_DIST);
+    return (mean_prox > smartinfo->dist_to_wall);
 }
 
 
@@ -139,7 +127,7 @@ uint16_t get_next_direction(int8_t deltaPosX, int8_t deltaPosY){
  * Generate all the informations for the move
  * - the angle it has to do
  * - the direction it will face
- * - the distance between the opposing tube and the TOF
+ * - the distance to the wall when it stops
  */
 void get_smart_info(uint8_t actualPos, uint8_t nextPos, smartinfo_t *smartinfo){
 	int16_t nextDirection;
@@ -153,24 +141,24 @@ void get_smart_info(uint8_t actualPos, uint8_t nextPos, smartinfo_t *smartinfo){
 	if (smartinfo->angle ==  270) smartinfo->angle = -90;
 	if (smartinfo->angle == -270) smartinfo->angle =  90;
 
-	set_dist_to_tube(smartinfo, absPosition[actualPos-1][0], absPosition[actualPos-1][1]);
+	set_dist_to_wall(smartinfo, absPosition[actualPos-1][0], absPosition[actualPos-1][1]);
 }
 
 /*
  * Compute the distance between the opposing tube and the TOF according to its position and direction
  */
-void set_dist_to_tube(smartinfo_t *smartinfo, uint8_t actualPosX, uint8_t actualPosY){
+void set_dist_to_wall(smartinfo_t *smartinfo, uint8_t actualPosX, uint8_t actualPosY){
 	if (smartinfo->actual_direction == EAST || smartinfo->actual_direction == WEST){
 		if (actualPosY == 0 || actualPosY == 2){
-			smartinfo->dist_to_tube = 2*100+DIST_SENSOR_TUBE;
+			smartinfo->dist_to_wall = 100+DIST_SENSOR_TUBE;
 		} else {
-			smartinfo->dist_to_tube = 100+DIST_SENSOR_TUBE;
+			smartinfo->dist_to_wall = CLOSE_DIST;
 		}
 	} else {
 		if (actualPosX == 0 || actualPosX == 2){
-			smartinfo->dist_to_tube = 2*100 + DIST_SENSOR_TUBE;
+			smartinfo->dist_to_wall = 100 + DIST_SENSOR_TUBE;
 		} else {
-			smartinfo->dist_to_tube = 100 + DIST_SENSOR_TUBE;
+			smartinfo->dist_to_wall = CLOSE_DIST;
 		}
 	}
 }
