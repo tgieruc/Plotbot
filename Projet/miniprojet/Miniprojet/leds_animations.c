@@ -23,50 +23,34 @@ static THD_FUNCTION(ThdLedsAnimations, arg) {
 	(void)arg;
 
 	uint8_t active_led = 0;
-	uint8_t pulse_state = 0;
 
 	clear_leds();
 
 //	set_led(4,1); test
 
 	while(1){
-
+		clear_leds();
 		switch(animation){
-		case IDLE: //solid blue
+		case IDLE: //rotating leds
 			chprintf((BaseSequentialStream *) &SD3, "led mode : idle");
-			set_rgb_led(0, 0, 0, 10);
-			set_rgb_led(1, 0, 0, 10);
-			set_rgb_led(2, 0, 0, 10);
-			set_rgb_led(3, 0, 0, 10);
+			set_led(((active_led++)%4), 1);
+			chThdSleepMilliseconds(500);
 			break;
-		case LISTENING://solid green
+		case LISTENING://pulsing body led
 			chprintf((BaseSequentialStream *) &SD3, "led mode : listening");
-			set_rgb_led(0, 0, 10, 0);
-			set_rgb_led(1, 0, 10, 0);
-			set_rgb_led(2, 0, 10, 0);
-			set_rgb_led(3, 0, 10, 0);
-			break;
-		case MOVING://rotating green
-			chprintf((BaseSequentialStream *) &SD3, "led mode : moving");
-			clear_leds();
-			set_rgb_led(((active_led++)%4), 0, 10, 0);
+			set_body_led(active_led++%2);
 			chThdSleepMilliseconds(200);
 			break;
-		case DONE://pulsing blue
+		case MOVING://solid body led
+			chprintf((BaseSequentialStream *) &SD3, "led mode : moving");
+			set_body_led(1);
+			break;
+		case DONE://body led off
 			chprintf((BaseSequentialStream *) &SD3, "led mode : done");
-			set_rgb_led(0, 0, 0, pulse_state);
-			set_rgb_led(1, 0, 0, pulse_state);
-			set_rgb_led(2, 0, 0, pulse_state);
-			set_rgb_led(3, 0, 0, pulse_state);
-			if (active_led%20 < 10){
-				pulse_state = active_led%10;
-			}
-			else{
-				pulse_state = 10-active_led%10;
-			}
+			set_body_led(0);
 			break;
 		}
-		chThdYield();
+//		chThdYield();
 	}
 }
 
