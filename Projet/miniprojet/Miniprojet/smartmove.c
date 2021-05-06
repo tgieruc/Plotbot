@@ -17,14 +17,19 @@
 #define SOUTH 		180
 #define WEST 		270
 
-#define DIST_SENSOR_TUBE 	40
+#define LONG_DIST 	140 //dist in mm for TOF sensor
+
 #define BLIND_TURN_SPEED 	300
 #define CENTERING_SPEED 	120
 #define FORWARD_SPEED		500
+
 #define ERROR_MARGIN		10
+
 #define SENSORS_FRONT_RIGHT 	0
 #define SENSORS_FRONT_LEFT 	 	7
-#define CLOSE_DIST				340
+
+#define CLOSE_DIST				340 //light intensity for IR sensor
+
 #define KP_TURN					0.3
 #define KP_FORWARD 				1
 #define KI 						0.2	//must not be zero
@@ -66,12 +71,12 @@ static THD_FUNCTION(ThdSmartMove, arg) {
 	get_sequ(&sequ_size, sequ);
 	chThdSleepMilliseconds(500);
 	setSoundFileVolume(50);
-	bool randsound = rand() & 1;
+	bool randsound = chVTGetSystemTime()%2 ;
 		if (randsound == 1){
 		playSoundFile("letsgo.wav",SF_SIMPLE_PLAY);
 		}
 		else{
-		playSoundFile("mario.wav.wav",SF_SIMPLE_PLAY);
+		playSoundFile("mario.wav",SF_SIMPLE_PLAY);
 		}
 		waitSoundFileHasFinished();
 
@@ -106,12 +111,12 @@ bool must_stop(smartinfo_t *smartinfo){
 
     proximity_msg_t prox_values;
 
-    if (smartinfo->dist_to_wall > 200){
+    if (smartinfo->dist_to_wall == LONG_DIST){
     	return (VL53L0X_get_dist_mm() < smartinfo->dist_to_wall);
     }
-    if (VL53L0X_get_dist_mm() > 60) {
-    	return false;
-    }
+//    if (VL53L0X_get_dist_mm() > 60) {
+//    	return false;
+//    }
 
 	messagebus_topic_wait(prox_topic, &prox_values, sizeof(prox_values));
 	uint16_t mean_prox = (prox_values.delta[SENSORS_FRONT_RIGHT] + prox_values.delta[SENSORS_FRONT_LEFT]) / 2;
@@ -157,13 +162,13 @@ void get_smart_info(uint8_t actualPos, uint8_t nextPos, smartinfo_t *smartinfo){
 void set_dist_to_wall(smartinfo_t *smartinfo, uint8_t actualPosX, uint8_t actualPosY){
 	if (smartinfo->actual_direction == EAST || smartinfo->actual_direction == WEST){
 		if (actualPosY == 0 || actualPosY == 2){
-			smartinfo->dist_to_wall = 100+DIST_SENSOR_TUBE;
+			smartinfo->dist_to_wall = LONG_DIST;
 		} else {
 			smartinfo->dist_to_wall = CLOSE_DIST;
 		}
 	} else {
 		if (actualPosX == 0 || actualPosX == 2){
-			smartinfo->dist_to_wall = 100 + DIST_SENSOR_TUBE;
+			smartinfo->dist_to_wall = LONG_DIST;
 		} else {
 			smartinfo->dist_to_wall = CLOSE_DIST;
 		}
