@@ -66,8 +66,14 @@ static THD_FUNCTION(ThdSmartMove, arg) {
 	get_sequ(&sequ_size, sequ);
 	chThdSleepMilliseconds(500);
 	setSoundFileVolume(50);
-	playSoundFile("letsgo.wav",SF_SIMPLE_PLAY);
-	waitSoundFileHasFinished();
+	bool randsound = rand() & 1;
+		if (randsound == 1){
+		playSoundFile("letsgo.wav",SF_SIMPLE_PLAY);
+		}
+		else{
+		playSoundFile("mario.wav.wav",SF_SIMPLE_PLAY);
+		}
+		waitSoundFileHasFinished();
 
 	set_led_state(MOVING);
 
@@ -78,6 +84,7 @@ static THD_FUNCTION(ThdSmartMove, arg) {
 		smart_move(&smartinfo);
 	}
 	set_led_state(DONE);
+	playSoundFile("done.wav",SF_SIMPLE_PLAY);
 }
 
 /*
