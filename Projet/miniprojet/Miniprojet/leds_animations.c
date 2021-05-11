@@ -32,25 +32,25 @@ static THD_FUNCTION(ThdLedsAnimations, arg) {
 		clear_leds();
 		switch(animation){
 		case IDLE: //rotating leds
-			chprintf((BaseSequentialStream *) &SD3, "led mode : idle");
+			chprintf((BaseSequentialStream *) &SD3, "led mode : idle \n");
 			set_led(((active_led++)%4), 1);
 			chThdSleepMilliseconds(500);
 			break;
 		case LISTENING://pulsing body led
-			chprintf((BaseSequentialStream *) &SD3, "led mode : listening");
+			chprintf((BaseSequentialStream *) &SD3, "led mode : listening \n");
 			set_body_led(active_led++%2);
 			chThdSleepMilliseconds(200);
 			break;
 		case MOVING://solid body led
-			chprintf((BaseSequentialStream *) &SD3, "led mode : moving");
+			chprintf((BaseSequentialStream *) &SD3, "led mode : moving \n");
 			set_body_led(1);
 			break;
 		case DONE://body led off
-			chprintf((BaseSequentialStream *) &SD3, "led mode : done");
+			chprintf((BaseSequentialStream *) &SD3, "led mode : done \n");
 			set_body_led(0);
 			break;
 		case ERROR_MODE://everything blinks
-			chprintf((BaseSequentialStream *) &SD3, "led mode : error");
+			chprintf((BaseSequentialStream *) &SD3, "led mode : error \n");
 			set_body_led(active_led++%2);
 			set_led(4,active_led%2);
 			chThdSleepMilliseconds(200);;

@@ -28,7 +28,7 @@ static int8_t frequ;
 static int8_t sequ[MAX_MOVES];
 static uint8_t sequ_size = 0;
 
-//static int8_t sequ[]={1,2,3,5};
+//static int8_t sequ[]={5,2,3,9};
 //static uint8_t sequ_size = 4;
 
 bool is_same_freq(int8_t input_freq, int8_t match_freq);
@@ -55,7 +55,7 @@ bool is_adjacent(uint8_t current_position, uint8_t next_position){
 
 void check_errors(void){
 	for (uint8_t i = 0; i < sequ_size - 1; ++i){
-		if (!is_adjacent(sequ[i], sequ[i-1])){
+		if (!is_adjacent(sequ[i], sequ[i+1])){
 			error_mode();
 		}
 	}
@@ -144,8 +144,9 @@ static THD_FUNCTION(ThdGetAudioSeq, arg) {
 	wait_for_start_sequ();
 	set_led_state(LISTENING);
 	record_sequ();
-	check_errors();
 	serial_print_sequ();
+	check_errors();
+
 
 	chprintf((BaseSequentialStream *) &SD3, "end\n\n");
 	chBSemSignal(&sequAquired);
