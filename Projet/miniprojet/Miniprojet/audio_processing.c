@@ -6,6 +6,7 @@
 #include <fft.h>
 #include <arm_math.h>
 #include <leds_animations.h>
+#include <audio/play_sound_file.h>
 
 
 //semaphore
@@ -27,11 +28,48 @@ static int8_t frequ;
 static int8_t sequ[MAX_MOVES];
 static uint8_t sequ_size = 0;
 
+//static int8_t sequ[]={1,2,3,5};
+//static uint8_t sequ_size = 4;
 
 bool is_same_freq(int8_t input_freq, int8_t match_freq);
 bool sequ_ended(void);
 void serial_print_sequ(void);
 void record_sequ(void);
+
+void check_errors(void);
+bool is_adjacent(uint8_t current_position, uint8_t next_position);
+void error_mode(void);
+
+bool is_adjacent(uint8_t current_position, uint8_t next_position){
+	uint8_t x0 = --current_position / 3;
+	uint8_t y0 = current_position % 3;
+	uint8_t x1 = --next_position / 3;
+	uint8_t y1 = next_position % 3;
+
+	uint8_t dx = abs(x0-x1);
+	uint8_t dy = abs(y0-y1);
+
+	return ((dx == 1 && dy == 0) || (dx == 0 && dy == 1));
+}
+
+
+void check_errors(void){
+	for (uint8_t i = 0; i < sequ_size - 1; ++i){
+		if (!is_adjacent(sequ[i], sequ[i-1])){
+			error_mode();
+		}
+	}
+}
+
+void error_mode(void){
+	setSoundFileVolume(50);
+	playSoundFile("error.wav",SF_SIMPLE_PLAY);
+	waitSoundFileHasFinished();
+	set_led_state(ERROR_MODE);
+	while(1){
+		; //stays in error mode until reset
+	}
+}
 
 /*
  * Print the received sequence over serial
@@ -106,6 +144,7 @@ static THD_FUNCTION(ThdGetAudioSeq, arg) {
 	wait_for_start_sequ();
 	set_led_state(LISTENING);
 	record_sequ();
+	check_errors();
 	serial_print_sequ();
 
 	chprintf((BaseSequentialStream *) &SD3, "end\n\n");

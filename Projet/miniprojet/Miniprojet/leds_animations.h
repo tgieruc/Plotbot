@@ -13,6 +13,7 @@ typedef enum{
 	LISTENING,//listening to the sequence¨
 	MOVING,
 	DONE,
+	ERROR_MODE,
 }leds_animation_t;
 
 

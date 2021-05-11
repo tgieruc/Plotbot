@@ -49,6 +49,12 @@ static THD_FUNCTION(ThdLedsAnimations, arg) {
 			chprintf((BaseSequentialStream *) &SD3, "led mode : done");
 			set_body_led(0);
 			break;
+		case ERROR_MODE://everything blinks
+			chprintf((BaseSequentialStream *) &SD3, "led mode : error");
+			set_body_led(active_led++%2);
+			set_led(4,active_led%2);
+			chThdSleepMilliseconds(200);;
+			break;
 		}
 //		chThdYield();
 	}

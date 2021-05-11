@@ -69,11 +69,6 @@ CONDVAR_DECL(bus_condvar);
 
 int main(void)
 {
-	set_rgb_led(0, 0, 0, 10);
-	set_rgb_led(1, 0, 0, 10);
-	set_rgb_led(2, 0, 0, 10);
-	set_rgb_led(3, 0, 0, 10);
-
     halInit();
     chSysInit();
     mpu_init();
