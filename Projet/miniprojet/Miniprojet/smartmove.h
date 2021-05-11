@@ -8,8 +8,9 @@
 #ifndef SMARTMOVE_H_
 #define SMARTMOVE_H_
 
+/**
+ * @brief	starts the ThdSmartMove thread
+ */
 void smartmove_start(void);
-
-
 
 #endif /* SMARTMOVE_H_ */

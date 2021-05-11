@@ -12,55 +12,15 @@
 
 static uint16_t position_px = 0;
 
-
 //semaphore
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
 static BSEMAPHORE_DECL(position_ready_sem, TRUE);
 
-static uint8_t min_val(uint8_t image[]){
-	uint8_t small = 255;
-	for (int i = MARGIN ; i < IMAGE_BUFFER_SIZE - MARGIN; i++){
-		if (image[i] < small){
-			small = image[i];
-		}
-	}
-	return small;
-}
-
-static uint8_t max_val(uint8_t image[]){
-	uint8_t big = 0;
-	for (int i = MARGIN ; i < IMAGE_BUFFER_SIZE - MARGIN; i++){
-		if (image[i] > big){
-			big = image[i];
-		}
-	}
-	return big;
-}
-
-static void image_info (uint8_t image[],uint16_t *width, uint16_t *position){
-	uint8_t threshold = (max_val(image)+3*min_val(image))/4;
-	uint16_t tempwidth = 0;
-	uint16_t tempposition = 0;
-
-	for (int i=MARGIN ; i < IMAGE_BUFFER_SIZE-MARGIN; i++){
-			if (image[i]<threshold){
-				(tempwidth)++;
-				tempposition = i;//dernier pixel de la ligne
-			}
-			else if (tempwidth != 0){
-				if (tempwidth < FILTER){//filtre passe haut
-					tempwidth  = 0;
-				}else{
-					if(abs(tempposition-IMAGE_BUFFER_SIZE/2) < abs(*width-IMAGE_BUFFER_SIZE/2)){//prend la barre la plus grande
-						*width = tempwidth;
-						*position = tempposition-tempwidth/2;
-					}
-				}
-			}
-	}
-}
-
-
+//*****FORWARD DECLARATION*****
+static uint8_t min_val(uint8_t image[]);
+static uint8_t max_val(uint8_t image[]);
+static void image_info (uint8_t image[],uint16_t *width, uint16_t *position);
+//*****************************
 
 static THD_WORKING_AREA(waCaptureImage, 256);
 static THD_FUNCTION(CaptureImage, arg) {
@@ -104,7 +64,7 @@ static THD_FUNCTION(ProcessImage, arg) {
     while(1){
 
     	width = 0;
-    	 position = 0;
+    	position = 0;
 
     	//waits until an image has been captured
         chBSemWait(&image_ready_sem);
@@ -112,20 +72,68 @@ static THD_FUNCTION(ProcessImage, arg) {
 		//gets the pointer to the array filled with the last image in RGB565
 		img_buff_ptr = dcmi_get_last_image_ptr();
 
-		//opération sur les bits :
-		//l image est envoyée en 2 x 8 bits, nouso n veut les 5 premier
-		//donc on prend que les pairs et on shift de 3 pour les avoir
-
+		//bit shifting to only get the red pixels
 		for (int i=0 ; i < IMAGE_BUFFER_SIZE; i++){
 			image[i] = *(img_buff_ptr+2*i) >> 3  ;
 		}
-//		SendUint8ToComputer(image, IMAGE_BUFFER_SIZE);
 
 		image_info(image,&width,&position);
 		position_px = position;
 
 		chBSemSignal(&position_ready_sem);
     }
+}
+
+/*
+ * Returns the minimum value of the pixel line with a MARGIN at each end
+ */
+static uint8_t min_val(uint8_t image[]){
+	uint8_t small = 255;
+	for (int i = MARGIN ; i < IMAGE_BUFFER_SIZE - MARGIN; i++){
+		if (image[i] < small){
+			small = image[i];
+		}
+	}
+	return small;
+}
+
+/*
+ * Returns the maximum value of the pixel line with a MARGIN at each end
+ */
+static uint8_t max_val(uint8_t image[]){
+	uint8_t big = 0;
+	for (int i = MARGIN ; i < IMAGE_BUFFER_SIZE - MARGIN; i++){
+		if (image[i] > big){
+			big = image[i];
+		}
+	}
+	return big;
+}
+
+/*
+ * Sets the position and the width of the largest line seen by the camera
+ */
+static void image_info (uint8_t image[],uint16_t *width, uint16_t *position){
+	uint8_t threshold = (max_val(image)+3*min_val(image))/4;
+	uint16_t tempwidth = 0;
+	uint16_t tempposition = 0;
+
+	for (int i=MARGIN ; i < IMAGE_BUFFER_SIZE-MARGIN; i++){
+			if (image[i]<threshold){
+				(tempwidth)++;
+				tempposition = i;
+			}
+			else if (tempwidth != 0){
+				if (tempwidth < FILTER){//only takes lines 30 pixels or wider
+					tempwidth  = 0;
+				}else{
+					if(abs(tempposition-IMAGE_BUFFER_SIZE/2) < abs(*width-IMAGE_BUFFER_SIZE/2)){//looks at the widest line
+						*width = tempwidth;
+						*position = tempposition-tempwidth/2;
+					}
+				}
+			}
+	}
 }
 
 void wait_position_acquired(void){

@@ -47,7 +47,6 @@ typedef struct smartinfo_t{
 	uint16_t dist_to_wall;
 }smartinfo_t;
 
-
 void get_smart_info(uint8_t actualPos, uint8_t nextPos, smartinfo_t *smartinfo);
 void centering(void);
 void smart_move(smartinfo_t *smartinfo);
@@ -114,10 +113,6 @@ bool must_stop(smartinfo_t *smartinfo){
     if (smartinfo->dist_to_wall == LONG_DIST){
     	return (VL53L0X_get_dist_mm() < smartinfo->dist_to_wall);
     }
-//    if (VL53L0X_get_dist_mm() > 60) {
-//    	return false;
-//    }
-
 	messagebus_topic_wait(prox_topic, &prox_values, sizeof(prox_values));
 	uint16_t mean_prox = (prox_values.delta[SENSORS_FRONT_RIGHT] + prox_values.delta[SENSORS_FRONT_LEFT]) / 2;
 

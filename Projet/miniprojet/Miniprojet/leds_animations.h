@@ -16,9 +16,15 @@ typedef enum{
 	ERROR_MODE,
 }leds_animation_t;
 
-
+/**
+ * @brief	sets the new led state
+ *
+ * @param 	new_animation	led animation wanted to be set
+ */
 void set_led_state(leds_animation_t new_animation);
-
+/**
+ * @brief starts the LedsAnimations thread (to be used in main)
+ */
 void leds_animations_start(void);
 
 #endif /* LEDS_ANIMATIONS_H_ */

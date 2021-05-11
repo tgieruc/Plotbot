@@ -1,10 +1,9 @@
 #include <main.h>
 #include <chprintf.h>
-
 #include <audio/microphone.h>
 #include <audio_processing.h>
-#include <fft.h>
 #include <arm_math.h>
+#include <arm_const_structs.h>
 #include <leds_animations.h>
 #include <audio/play_sound_file.h>
 
@@ -28,18 +27,37 @@ static int8_t frequ;
 static int8_t sequ[MAX_MOVES];
 static uint8_t sequ_size = 0;
 
-//static int8_t sequ[]={5,2,3,9};
-//static uint8_t sequ_size = 4;
-
+//*****FORWARD DECLARATION*****
 bool is_same_freq(int8_t input_freq, int8_t match_freq);
 bool sequ_ended(void);
 void serial_print_sequ(void);
 void record_sequ(void);
-
-void check_errors(void);
+void wait_for_start_sequ(void);
 bool is_adjacent(uint8_t current_position, uint8_t next_position);
+void check_errors(void);
 void error_mode(void);
+//*****************************
 
+static THD_WORKING_AREA(waThdGetAudioSeq, 1024);
+static THD_FUNCTION(ThdGetAudioSeq, arg) {
+
+    chRegSetThreadName(__FUNCTION__);
+    (void)arg;
+
+    set_led_state(IDLE);
+	wait_for_start_sequ();
+	set_led_state(LISTENING);
+	record_sequ();
+	serial_print_sequ();
+	check_errors();
+
+
+	chprintf((BaseSequentialStream *) &SD3, "end\n\n");
+	chBSemSignal(&sequAquired);
+}
+/*
+ * Returns 1 if the positions are adjacent, otherwise returns 0
+ */
 bool is_adjacent(uint8_t current_position, uint8_t next_position){
 	uint8_t x0 = --current_position / 3;
 	uint8_t y0 = current_position % 3;
@@ -51,8 +69,10 @@ bool is_adjacent(uint8_t current_position, uint8_t next_position){
 
 	return ((dx == 1 && dy == 0) || (dx == 0 && dy == 1));
 }
-
-
+/*
+ *	checks in the position array if some positions are not adjacent,
+ *	which will trigger the error mode
+ */
 void check_errors(void){
 	for (uint8_t i = 0; i < sequ_size - 1; ++i){
 		if (!is_adjacent(sequ[i], sequ[i+1])){
@@ -60,7 +80,9 @@ void check_errors(void){
 		}
 	}
 }
-
+/*
+ * Sets the e-puck in error mode  (sound + leds)
+ */
 void error_mode(void){
 	setSoundFileVolume(50);
 	playSoundFile("error.wav",SF_SIMPLE_PLAY);
@@ -102,9 +124,11 @@ void wait_for_next_peak(int8_t old_freq){
  * Wait until it receives the start sequence
  */
 void wait_for_start_sequ(void){
+
     int8_t startSequence[] = {29, 32, 36, 29, 32, 44};
     int8_t old_freq = NO_PEAK;
 	uint8_t i = 0;
+
 	chprintf((BaseSequentialStream *) &SD3, "listening...\n");
 	while (i < sizeof startSequence / sizeof startSequence[0]){
 		wait_for_next_peak(old_freq);
@@ -124,7 +148,9 @@ void wait_for_start_sequ(void){
  * Check if it has received the end sequence
  */
 bool sequ_ended(void){
+
     int8_t endSequence[] = {44, 29, 32, 29};
+
     if (sequ_size <= 4) return false;
     for (uint8_t i = 0; i < sizeof endSequence / sizeof endSequence[0]; ++i){
     	if (!is_same_freq(sequ[sequ_size-4+i], endSequence[i])){
@@ -134,29 +160,13 @@ bool sequ_ended(void){
 	return true;
 }
 
-static THD_WORKING_AREA(waThdGetAudioSeq, 1024);
-static THD_FUNCTION(ThdGetAudioSeq, arg) {
-
-    chRegSetThreadName(__FUNCTION__);
-    (void)arg;
-
-    set_led_state(IDLE);
-	wait_for_start_sequ();
-	set_led_state(LISTENING);
-	record_sequ();
-	serial_print_sequ();
-	check_errors();
-
-
-	chprintf((BaseSequentialStream *) &SD3, "end\n\n");
-	chBSemSignal(&sequAquired);
-}
-
 /*
  * Listen to the sequence and store it in the static array sequ
  */
 void record_sequ(void){
+
 	int8_t old_freq = 44;
+
 	while (!sequ_ended()){
 		wait_for_next_peak(old_freq);
 		sequ[sequ_size] =  frequ;
@@ -173,7 +183,6 @@ void record_sequ(void){
 void audioSeq_start(void){
 	chThdCreateStatic(waThdGetAudioSeq, sizeof(waThdGetAudioSeq), NORMALPRIO, ThdGetAudioSeq, NULL);
 }
-
 
 /*
 *	Simple function used to detect the highest value in a buffer
@@ -204,24 +213,10 @@ void get_sequ(uint8_t *sequ_size_out, int8_t *sequ_out){
 /*
 *	Callback called when the demodulation of the four microphones is done.
 *	We get 160 samples per mic every 10ms (16kHz)
-*	
-*	params :
-*	int16_t *data			Buffer containing 4 times 160 samples. the samples are sorted by micro
-*							so we have [micRight1, micLeft1, micBack1, micFront1, micRight2, etc...]
-*	uint16_t num_samples	Tells how many data we get in total (should always be 640)
 */
 void processAudioData(int16_t *data, uint16_t num_samples){
 
-	/*
-	*
-	*	We get 160 samples per mic every 10ms
-	*	So we fill the samples buffers to reach
-	*	1024 samples, then we compute the FFTs.
-	*
-	*/
-
 	static uint16_t nb_samples = 0;
-
 
 	//loop to fill the buffers
 	for(uint16_t i = 0 ; i < num_samples ; i+=4){
@@ -241,23 +236,12 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 	}
 
 	if(nb_samples >= (2 * FFT_SIZE)){
-		/*	FFT proccessing
-		*
-		*	This FFT function stores the results in the input buffer given.
-		*	This is an "In Place" function. 
-		*/
 
-		doFFT_optimized(FFT_SIZE, micFront_cmplx_input);
+		//FFT processing
+		arm_cfft_f32(&arm_cfft_sR_f32_len1024, micFront_cmplx_input, 0, 1);
 
-		/*	Magnitude processing
-		*
-		*	Computes the magnitude of the complex numbers and
-		*	stores them in a buffer of FFT_SIZE because it only contains
-		*	real numbers.
-		*
-		*/
+		//Magnitude processing
 		arm_cmplx_mag_f32(micFront_cmplx_input, micFront_output, FFT_SIZE);
-
 
 		nb_samples = 0;
 
