@@ -22,6 +22,7 @@ typedef enum{
  * @param 	new_animation	led animation wanted to be set
  */
 void set_led_state(leds_animation_t new_animation);
+
 /**
  * @brief starts the LedsAnimations thread (to be used in main)
  */

@@ -7,14 +7,14 @@
 #include <camera/po8030.h>
 #include <process_image.h>
 
+//semaphore
+static BSEMAPHORE_DECL(image_ready_sem, TRUE);
+static BSEMAPHORE_DECL(position_ready_sem, TRUE);
+
 #define MARGIN 150
 #define FILTER 30
 
 static uint16_t position_px = 0;
-
-//semaphore
-static BSEMAPHORE_DECL(image_ready_sem, TRUE);
-static BSEMAPHORE_DECL(position_ready_sem, TRUE);
 
 //*****FORWARD DECLARATION*****
 static uint8_t min_val(uint8_t image[]);
@@ -34,9 +34,7 @@ static THD_FUNCTION(CaptureImage, arg) {
 	dcmi_set_capture_mode(CAPTURE_ONE_SHOT);
 	dcmi_prepare();
 
-
     while(1){
-
 
     	//starts a capture
 		dcmi_capture_start();
@@ -47,7 +45,6 @@ static THD_FUNCTION(CaptureImage, arg) {
 		chBSemSignal(&image_ready_sem);
     }
 }
-
 
 static THD_WORKING_AREA(waProcessImage, 1024);
 static THD_FUNCTION(ProcessImage, arg) {

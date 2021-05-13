@@ -11,17 +11,17 @@
 //semaphore
 static BSEMAPHORE_DECL(sequAquired, TRUE);
 
-//2 times FFT_SIZE because this array contain complex numbers (real + imaginary)
-static float micFront_cmplx_input[2 * FFT_SIZE];
-//Array containing the computed magnitude of the complex numbers
-static float micFront_output[FFT_SIZE];
-
 #define MIN_VALUE_THRESHOLD	10000 
 
 #define MIN_FREQ		10	//we don't analyze before this index to not use resources for nothing
 #define MAX_FREQ		50	//we don't analyze after this index to not use resources for nothing
 
 #define NO_PEAK -1
+
+//2 times FFT_SIZE because this array contain complex numbers (real + imaginary)
+static float micFront_cmplx_input[2 * FFT_SIZE];
+//Array containing the computed magnitude of the complex numbers
+static float micFront_output[FFT_SIZE];
 
 static int8_t frequ;
 static int8_t sequ[MAX_MOVES];
@@ -54,6 +54,7 @@ static THD_FUNCTION(ThdGetAudioSeq, arg) {
 	check_errors();
 	chBSemSignal(&sequAquired);
 }
+
 /*
  * Returns 1 if the positions are adjacent, otherwise returns 0
  */
@@ -79,6 +80,7 @@ void check_errors(void){
 		}
 	}
 }
+
 /*
  * Sets the e-puck in error mode  (sound + leds)
  */
