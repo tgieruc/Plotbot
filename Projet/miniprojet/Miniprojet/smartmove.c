@@ -210,7 +210,7 @@ void centering(void){
 			sum_error = -MAX_SUM_ERROR;
 		}
 
-		speed = error * KP_TURN + sum_error*KI;
+		speed = error*KP_TURN + sum_error*KI;
 
 		if (speed > CENTERING_SPEED) speed = CENTERING_SPEED;
 		if (speed < -CENTERING_SPEED) speed = -CENTERING_SPEED;
@@ -239,6 +239,6 @@ void move_forward(smartinfo_t *smartinfo){
 
 
 void smartmove_start(void){
-	chThdCreateStatic(waThdSmartMove, sizeof(waThdSmartMove), NORMALPRIO, ThdSmartMove, NULL);
+	chThdCreateStatic(waThdSmartMove, sizeof(waThdSmartMove), NORMALPRIO+1, ThdSmartMove, NULL);
 }
 

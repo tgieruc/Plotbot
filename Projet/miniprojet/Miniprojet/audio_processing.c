@@ -48,11 +48,10 @@ static THD_FUNCTION(ThdGetAudioSeq, arg) {
 	wait_for_start_sequ();
 	set_led_state(LISTENING);
 	record_sequ();
+	#ifdef DEBUG
 	serial_print_sequ();
+	#endif
 	check_errors();
-
-
-	chprintf((BaseSequentialStream *) &SD3, "end\n\n");
 	chBSemSignal(&sequAquired);
 }
 /*
@@ -98,7 +97,7 @@ void error_mode(void){
  */
 void serial_print_sequ(void){
 	chprintf((BaseSequentialStream *) &SD3, "\nSequ: [ ");
-	for (uint i = 0; i < sequ_size; ++i){
+	for (uint8_t i = 0; i < sequ_size; ++i){
 		chprintf((BaseSequentialStream *) &SD3, "%d ", sequ[i]);
 	}
 	chprintf((BaseSequentialStream *) &SD3, "]\n");

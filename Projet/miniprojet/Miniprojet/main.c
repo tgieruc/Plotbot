@@ -85,7 +85,7 @@ int main(void)
     mic_start(&processAudioData);
 
     //starts the timer 12
-    timer12_start();
+//    timer12_start();
 
     //starts the different custom made threads
     leds_animations_start();

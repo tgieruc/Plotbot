@@ -8,10 +8,9 @@
 #include <leds.h>
 #include <leds_animations.h>
 #include <chprintf.h>
+#include <main.h>
 
 static leds_animation_t animation = IDLE;
-
-//#define  LED_DEBUG
 
 //*****FORWARD DECLARATION*****
 void set_led_state (leds_animation_t new_animation);
@@ -32,33 +31,33 @@ static THD_FUNCTION(ThdLedsAnimations, arg) {
 		clear_leds();
 		switch(animation){
 		case IDLE: //rotating leds
-			#ifdef LED_DEBUG
+			#ifdef DEBUG
 			chprintf((BaseSequentialStream *) &SD3, "led mode : idle \n");
 			#endif
 			set_led(((active_led++)%4), 1);
 			chThdSleepMilliseconds(500);
 			break;
 		case LISTENING://pulsing body led
-			#ifdef LED_DEBUG
+			#ifdef DEBUG
 			chprintf((BaseSequentialStream *) &SD3, "led mode : listening \n");
 			#endif
 			set_body_led(active_led++%2);
 			chThdSleepMilliseconds(200);
 			break;
 		case MOVING://solid body led
-			#ifdef LED_DEBUG
+			#ifdef DEBUG
 			chprintf((BaseSequentialStream *) &SD3, "led mode : moving \n");
 			#endif
 			set_body_led(1);
 			break;
 		case DONE://body led off
-			#ifdef LED_DEBUG
+			#ifdef DEBUG
 			chprintf((BaseSequentialStream *) &SD3, "led mode : done \n");
 			#endif
 			set_body_led(0);
 			break;
 		case ERROR_MODE://everything blinks
-			#ifdef LED_DEBUG
+			#ifdef DEBUG
 			chprintf((BaseSequentialStream *) &SD3, "led mode : error \n");
 			#endif
 			set_body_led(active_led++%2);

@@ -124,12 +124,14 @@ static void image_info (uint8_t image[],uint16_t *width, uint16_t *position){
 				tempposition = i;
 			}
 			else if (tempwidth != 0){
-				if (tempwidth < FILTER){//only takes lines 30 pixels or wider
+				if (tempwidth < FILTER){//only takes lines FILTER pixels or wider
 					tempwidth  = 0;
 				}else{
-					if(abs(tempposition-IMAGE_BUFFER_SIZE/2) < abs(*width-IMAGE_BUFFER_SIZE/2)){//looks at the widest line
+					tempposition-=tempwidth/2;
+					if(abs(tempposition-IMAGE_BUFFER_SIZE/2)
+					 < abs(*position-IMAGE_BUFFER_SIZE/2)){//takes the line closest to the center
 						*width = tempwidth;
-						*position = tempposition-tempwidth/2;
+						*position = tempposition;
 					}
 				}
 			}
