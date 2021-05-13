@@ -247,6 +247,6 @@ void move_forward(smartinfo_t *smartinfo){
 
 
 void smartmove_start(void){
-	chThdCreateStatic(waThdSmartMove, sizeof(waThdSmartMove), NORMALPRIO+1, ThdSmartMove, NULL);
+	chThdCreateStatic(waThdSmartMove, sizeof(waThdSmartMove), NORMALPRIO, ThdSmartMove, NULL);
 }
 
