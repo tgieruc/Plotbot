@@ -104,7 +104,7 @@ void smart_move(smartinfo_t *smartinfo){
 	if (smartinfo->angle != 0){
 		blind_turn(smartinfo);
 	}
-	calibrate_ir();
+//	calibrate_ir();
   	centering();
 	move_forward(smartinfo);
 }

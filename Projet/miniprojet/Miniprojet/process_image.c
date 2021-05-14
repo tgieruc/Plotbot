@@ -111,30 +111,27 @@ static uint8_t max_val(uint8_t image[]){
  * Sets the position and the width of the largest line seen by the camera
  */
 static void image_info (uint8_t image[],uint16_t *width, uint16_t *position){
-	uint8_t threshold = (max_val(image)+min_val(image))/2;
+	uint8_t threshold = (max_val(image)+3*min_val(image))/4;
 	uint16_t tempwidth = 0;
-	int16_t tempposition = 0;
-
-	*position=0;
-
+	uint16_t tempposition = 0;
+	uint16_t new_position = 0;
 	for (int i=MARGIN ; i < IMAGE_BUFFER_SIZE-MARGIN; i++){
 			if (image[i]<threshold){
 				(tempwidth)++;
-				tempposition = i;
+				tempposition = i;//dernier pixel de la ligne
 			}
 			else if (tempwidth != 0){
-				if (tempwidth < FILTER){//only takes lines FILTER pixels or wider
-					tempwidth = 0;
+				if (tempwidth < FILTER){//filtre passe haut
+					tempwidth  = 0;
 				}else{
-					tempposition-=tempwidth/2;
-					if(abs(tempposition-IMAGE_BUFFER_SIZE/2)
-					 < abs(*position-IMAGE_BUFFER_SIZE/2)){//takes the line closest to the center
+					if(abs(tempposition-tempwidth/2 -IMAGE_BUFFER_SIZE/2) < abs(new_position-IMAGE_BUFFER_SIZE/2)){//prend la barre la plus grande
 						*width = tempwidth;
-						*position = tempposition;
+						new_position = tempposition-tempwidth/2;
 					}
 				}
 			}
 	}
+	*position = new_position;
 }
 
 void wait_position_acquired(void){
