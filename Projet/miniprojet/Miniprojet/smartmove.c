@@ -31,7 +31,7 @@
 #define SENSORS_FRONT_RIGHT 	0
 #define SENSORS_FRONT_LEFT 	 	7
 
-#define CLOSE_DIST				1000//light intensity for IR sensor
+#define CLOSE_DIST				340//light intensity for IR sensor
 
 #define KP_TURN					0.3f
 #define KP_FORWARD 				1
@@ -74,26 +74,25 @@ static THD_FUNCTION(ThdSmartMove, arg) {
 
 	wait_sequ_aquired();
 	get_sequ(&sequ_size, sequ);
-//	chThdSleepMilliseconds(500);//to avoid audio playing problem
+
 	setSoundFileVolume(VOLUME);
 	bool randsound = chVTGetSystemTime()%2 ;//play a random sound before moving
-		if (randsound == 1){
+	if (randsound == 1){
 		playSoundFile("letsgo.wav",SF_SIMPLE_PLAY);
-		}
-		else{
+	} else {
 		playSoundFile("mario.wav",SF_SIMPLE_PLAY);
-		}
-		waitSoundFileHasFinished();
+	}
+	waitSoundFileHasFinished();
 
-		set_led_state(MOVING);
+	set_led_state(MOVING);
 
 	smartinfo.actual_direction = NORTH;//default orientation of the epuck
 	for (uint8_t i = 0; i < sequ_size-1; ++i){//goes through the whole position sequence and moves accordingly
 		get_smart_info(sequ[i],sequ[i+1],&smartinfo);
 		smart_move(&smartinfo);
 	}
+
 	set_led_state(DONE);
-//	chThdSleepMilliseconds(500);//to avoid audio playing problem
 	playSoundFile("done.wav",SF_SIMPLE_PLAY);
 }
 
@@ -104,7 +103,6 @@ void smart_move(smartinfo_t *smartinfo){
 	if (smartinfo->angle != 0){
 		blind_turn(smartinfo);
 	}
-//	calibrate_ir();
   	centering();
 	move_forward(smartinfo);
 }
@@ -113,6 +111,7 @@ void smart_move(smartinfo_t *smartinfo){
  * Check if the robot must stop
  */
 bool must_stop(smartinfo_t *smartinfo){
+
     messagebus_topic_t *prox_topic = messagebus_find_topic_blocking(&bus, "/proximity");
 
     proximity_msg_t prox_values;
@@ -123,13 +122,15 @@ bool must_stop(smartinfo_t *smartinfo){
 		#endif
     	return (VL53L0X_get_dist_mm() < smartinfo->dist_to_wall);//uses  the TOF (distance decreases when closer)
     }
+
 	messagebus_topic_wait(prox_topic, &prox_values, sizeof(prox_values));
-	uint16_t mean_prox = (prox_values.delta[SENSORS_FRONT_RIGHT] + prox_values.delta[SENSORS_FRONT_LEFT]) / 2;
+	unsigned int mean_prox = (prox_values.delta[SENSORS_FRONT_RIGHT] + prox_values.delta[SENSORS_FRONT_LEFT]) / 2;
 	#ifdef DEBUG
     chprintf((BaseSequentialStream *) &SD3, "IR sensors : %d \n", mean_prox);
 	#endif
     return (mean_prox > CLOSE_DIST);//uses the IR sensor (light intensity increases when closer)
-//    prox_values.delta[SENSORS_FRONT_RIGHT] > CLOSE_DIST || prox_values.delta[SENSORS_FRONT_LEFT] > CLOSE_DIST
+
+//
 }
 
 

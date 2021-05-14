@@ -46,6 +46,7 @@ static THD_FUNCTION(ThdGetAudioSeq, arg) {
 
     set_led_state(IDLE);
 	wait_for_start_sequ();
+
 	set_led_state(LISTENING);
 	record_sequ();
 	#ifdef DEBUG
@@ -69,6 +70,7 @@ bool is_adjacent(uint8_t current_position, uint8_t next_position){
 
 	return ((dx == 1 && dy == 0) || (dx == 0 && dy == 1));
 }
+
 /*
  *	checks in the position array if some positions are not adjacent,
  *	which will trigger the error mode
@@ -130,10 +132,8 @@ void wait_for_start_sequ(void){
     int8_t old_freq = NO_PEAK;
 	uint8_t i = 0;
 
-//	chprintf((BaseSequentialStream *) &SD3, "listening...\n");
 	while (i < sizeof startSequence / sizeof startSequence[0]){
 		wait_for_next_peak(old_freq);
-//		chprintf((BaseSequentialStream *) &SD3, "frequ : %d\n",frequ);
 		if (is_same_freq(frequ,startSequence[i])){
 			old_freq = frequ;
 			i++;
@@ -142,7 +142,6 @@ void wait_for_start_sequ(void){
 			i = 0;
 		}
 	}
-//	chprintf((BaseSequentialStream *) &SD3, "startSequ detected");
 }
 
 /*
@@ -181,6 +180,10 @@ void record_sequ(void){
 	}
 }
 
+
+/*
+ * Starts ThdGetAudioSeq thread
+ */
 void audioSeq_start(void){
 	chThdCreateStatic(waThdGetAudioSeq, sizeof(waThdGetAudioSeq), NORMALPRIO, ThdGetAudioSeq, NULL);
 }
@@ -202,7 +205,9 @@ void set_peak(float* data){
 	frequ = max_norm_index;
 }
 
-
+/*
+ * To export the position sequence
+ */
 void get_sequ(uint8_t *sequ_size_out, int8_t *sequ_out){
 	*sequ_size_out = sequ_size;
 	for (uint8_t i = 0; i < sequ_size; ++i){
