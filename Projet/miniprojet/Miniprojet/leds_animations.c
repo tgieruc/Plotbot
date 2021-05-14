@@ -24,10 +24,11 @@ static THD_FUNCTION(ThdLedsAnimations, arg) {
 	(void)arg;
 
 	uint8_t active_led = 0;
+	bool done = FALSE;
 
 	clear_leds();
 
-	while(1){
+	while(done == FALSE){
 		clear_leds();
 		switch(animation){
 		case IDLE: //rotating leds
@@ -55,6 +56,7 @@ static THD_FUNCTION(ThdLedsAnimations, arg) {
 			chprintf((BaseSequentialStream *) &SD3, "led mode : done \n");
 			#endif
 			set_body_led(0);
+			done = TRUE;
 			break;
 		case ERROR_MODE://everything blinks
 			#ifdef DEBUG

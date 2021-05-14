@@ -130,10 +130,10 @@ void wait_for_start_sequ(void){
     int8_t old_freq = NO_PEAK;
 	uint8_t i = 0;
 
-	chprintf((BaseSequentialStream *) &SD3, "listening...\n");
+//	chprintf((BaseSequentialStream *) &SD3, "listening...\n");
 	while (i < sizeof startSequence / sizeof startSequence[0]){
 		wait_for_next_peak(old_freq);
-		chprintf((BaseSequentialStream *) &SD3, "frequ : %d\n",frequ);
+//		chprintf((BaseSequentialStream *) &SD3, "frequ : %d\n",frequ);
 		if (is_same_freq(frequ,startSequence[i])){
 			old_freq = frequ;
 			i++;
@@ -142,7 +142,7 @@ void wait_for_start_sequ(void){
 			i = 0;
 		}
 	}
-	chprintf((BaseSequentialStream *) &SD3, "startSequ detected");
+//	chprintf((BaseSequentialStream *) &SD3, "startSequ detected");
 }
 
 /*
@@ -173,7 +173,7 @@ void record_sequ(void){
 		sequ[sequ_size] =  frequ;
 		sequ_size++;
 		old_freq = frequ;
-		chprintf((BaseSequentialStream *) &SD3, "frequ %d : %d\n",sequ_size,sequ[sequ_size-1]);
+//		chprintf((BaseSequentialStream *) &SD3, "frequ %d : %d\n",sequ_size,sequ[sequ_size-1]);
 	}
 	sequ_size -= 4;
 	for (uint8_t i = 0; i < sequ_size; ++i){

@@ -123,7 +123,7 @@ static THD_FUNCTION(ProcessImage, arg) {
 		image[i] = *(img_buff_ptr+2*i) >> 3  ;
 
 		}
-//		SendUint8ToComputer(image, IMAGE_BUFFER_SIZE);
+		SendUint8ToComputer(image, IMAGE_BUFFER_SIZE);
 
 		image_info(image,&width,&position);
 		distance_cm = width*(-0.0357)+17 ;//fonction qui converti les px en cm

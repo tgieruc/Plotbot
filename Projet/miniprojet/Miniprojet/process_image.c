@@ -11,7 +11,7 @@
 static BSEMAPHORE_DECL(image_ready_sem, TRUE);
 static BSEMAPHORE_DECL(position_ready_sem, TRUE);
 
-#define MARGIN 150
+#define MARGIN 0
 #define FILTER 30
 
 static uint16_t position_px = 0;
@@ -111,9 +111,11 @@ static uint8_t max_val(uint8_t image[]){
  * Sets the position and the width of the largest line seen by the camera
  */
 static void image_info (uint8_t image[],uint16_t *width, uint16_t *position){
-	uint8_t threshold = (max_val(image)+3*min_val(image))/4;
+	uint8_t threshold = (max_val(image)+min_val(image))/2;
 	uint16_t tempwidth = 0;
-	uint16_t tempposition = 0;
+	int16_t tempposition = 0;
+
+	*position=0;
 
 	for (int i=MARGIN ; i < IMAGE_BUFFER_SIZE-MARGIN; i++){
 			if (image[i]<threshold){
@@ -122,7 +124,7 @@ static void image_info (uint8_t image[],uint16_t *width, uint16_t *position){
 			}
 			else if (tempwidth != 0){
 				if (tempwidth < FILTER){//only takes lines FILTER pixels or wider
-					tempwidth  = 0;
+					tempwidth = 0;
 				}else{
 					tempposition-=tempwidth/2;
 					if(abs(tempposition-IMAGE_BUFFER_SIZE/2)

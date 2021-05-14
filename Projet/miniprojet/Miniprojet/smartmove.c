@@ -24,18 +24,18 @@
 
 #define BLIND_TURN_SPEED 	300
 #define CENTERING_SPEED 	120
-#define FORWARD_SPEED		500
+#define FORWARD_SPEED		400
 
-#define ERROR_MARGIN		10
+#define ERROR_MARGIN		5
 
 #define SENSORS_FRONT_RIGHT 	0
 #define SENSORS_FRONT_LEFT 	 	7
 
-#define CLOSE_DIST				340 //light intensity for IR sensor
+#define CLOSE_DIST				1000//light intensity for IR sensor
 
-#define KP_TURN					0.3
+#define KP_TURN					0.3f
 #define KP_FORWARD 				1
-#define KI 						0.2	//must not be zero
+#define KI 						0.2f	//must not be zero
 #define MAX_SUM_ERROR 			50
 
 #define MIDDLE_DCIM 320
@@ -74,8 +74,8 @@ static THD_FUNCTION(ThdSmartMove, arg) {
 
 	wait_sequ_aquired();
 	get_sequ(&sequ_size, sequ);
-	chThdSleepMilliseconds(500);//to avoid audio playing problem
-	setSoundFileVolume(50);
+//	chThdSleepMilliseconds(500);//to avoid audio playing problem
+	setSoundFileVolume(VOLUME);
 	bool randsound = chVTGetSystemTime()%2 ;//play a random sound before moving
 		if (randsound == 1){
 		playSoundFile("letsgo.wav",SF_SIMPLE_PLAY);
@@ -84,7 +84,8 @@ static THD_FUNCTION(ThdSmartMove, arg) {
 		playSoundFile("mario.wav",SF_SIMPLE_PLAY);
 		}
 		waitSoundFileHasFinished();
-	set_led_state(MOVING);
+
+		set_led_state(MOVING);
 
 	smartinfo.actual_direction = NORTH;//default orientation of the epuck
 	for (uint8_t i = 0; i < sequ_size-1; ++i){//goes through the whole position sequence and moves accordingly
@@ -92,6 +93,7 @@ static THD_FUNCTION(ThdSmartMove, arg) {
 		smart_move(&smartinfo);
 	}
 	set_led_state(DONE);
+//	chThdSleepMilliseconds(500);//to avoid audio playing problem
 	playSoundFile("done.wav",SF_SIMPLE_PLAY);
 }
 
@@ -102,6 +104,7 @@ void smart_move(smartinfo_t *smartinfo){
 	if (smartinfo->angle != 0){
 		blind_turn(smartinfo);
 	}
+	calibrate_ir();
   	centering();
 	move_forward(smartinfo);
 }
@@ -125,7 +128,8 @@ bool must_stop(smartinfo_t *smartinfo){
 	#ifdef DEBUG
     chprintf((BaseSequentialStream *) &SD3, "IR sensors : %d \n", mean_prox);
 	#endif
-    return (mean_prox > smartinfo->dist_to_wall);//uses the IR sensor (light intensity increases when closer)
+    return (mean_prox > CLOSE_DIST);//uses the IR sensor (light intensity increases when closer)
+//    prox_values.delta[SENSORS_FRONT_RIGHT] > CLOSE_DIST || prox_values.delta[SENSORS_FRONT_LEFT] > CLOSE_DIST
 }
 
 
@@ -203,14 +207,14 @@ void blind_turn(smartinfo_t *smartinfo){
  * Turn according to the DCIM (by getting infos from process_image)
  */
 void centering(void){
-	float error = MIDDLE_DCIM - get_position_px();
+	float error = 0;
 	float speed = 0;
 	float sum_error = 0;
-	chprintf((BaseSequentialStream *) &SD3, "smartturn \n");
 
+	wait_position_acquired();
+	error = MIDDLE_DCIM - get_position_px();
 
-	while (abs (error) > ERROR_MARGIN){
-		wait_position_acquired();
+	while (abs(error) > ERROR_MARGIN){
 		sum_error += error;
 
 		if(sum_error > MAX_SUM_ERROR){
@@ -226,6 +230,7 @@ void centering(void){
 
 		left_motor_set_speed(-speed);
 		right_motor_set_speed(speed);
+		wait_position_acquired();
 		error = MIDDLE_DCIM - get_position_px();
 	}
 	left_motor_set_speed(0);
