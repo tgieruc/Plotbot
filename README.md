@@ -1,1 +1,4 @@
-Projet robotique BA6
+# PLOTBOT
+## Projet robotique BA6
+
+Le code pour la review se trouve dans la branche *RENDU*
