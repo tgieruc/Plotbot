@@ -22,6 +22,10 @@ static uint8_t max_val(uint8_t image[]);
 static void image_info (uint8_t image[],uint16_t *width, uint16_t *position);
 //*****************************
 
+
+/*
+ * Comes from the TP camreg
+ */
 static THD_WORKING_AREA(waCaptureImage, 256);
 static THD_FUNCTION(CaptureImage, arg) {
 
@@ -46,6 +50,10 @@ static THD_FUNCTION(CaptureImage, arg) {
     }
 }
 
+
+/*
+ * Comes from the TP camreg
+ */
 static THD_WORKING_AREA(waProcessImage, 1024);
 static THD_FUNCTION(ProcessImage, arg) {
 
@@ -124,7 +132,7 @@ static void image_info (uint8_t image[],uint16_t *width, uint16_t *position){
 				if (tempwidth < FILTER){//filtre passe haut
 					tempwidth  = 0;
 				}else{
-					if(abs(tempposition-tempwidth/2 -IMAGE_BUFFER_SIZE/2) < abs(new_position-IMAGE_BUFFER_SIZE/2)){//prend la barre la plus grande
+					if(abs(tempposition-tempwidth/2 -IMAGE_BUFFER_SIZE/2) < abs(new_position-IMAGE_BUFFER_SIZE/2)){//prend la barre la plus au centre
 						*width = tempwidth;
 						new_position = tempposition-tempwidth/2;
 					}

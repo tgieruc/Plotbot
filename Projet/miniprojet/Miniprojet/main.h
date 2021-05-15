@@ -10,8 +10,8 @@ extern "C" {
 #include "parameter/parameter.h"
 
 #define IMAGE_BUFFER_SIZE		640
-#define  DEBUG
-#define VOLUME 10
+//#define  DEBUG
+#define VOLUME 50
 
 /** Robot wide IPC bus. */
 extern messagebus_t bus;

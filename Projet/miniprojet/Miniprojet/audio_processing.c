@@ -16,7 +16,7 @@ static BSEMAPHORE_DECL(sequAquired, TRUE);
 #define MIN_FREQ		10	//we don't analyze before this index to not use resources for nothing
 #define MAX_FREQ		50	//we don't analyze after this index to not use resources for nothing
 
-#define NO_PEAK -1
+#define NO_PEAK			-1
 
 //2 times FFT_SIZE because this array contain complex numbers (real + imaginary)
 static float micFront_cmplx_input[2 * FFT_SIZE];
@@ -65,8 +65,8 @@ bool is_adjacent(uint8_t current_position, uint8_t next_position){
 	uint8_t x1 = --next_position / 3;
 	uint8_t y1 = next_position % 3;
 
-	uint8_t dx = abs(x0-x1);
-	uint8_t dy = abs(y0-y1);
+	uint8_t dx = abs(x0 - x1);
+	uint8_t dy = abs(y0 - y1);
 
 	return ((dx == 1 && dy == 0) || (dx == 0 && dy == 1));
 }
@@ -87,7 +87,7 @@ void check_errors(void){
  * Sets the e-puck in error mode  (sound + leds)
  */
 void error_mode(void){
-	setSoundFileVolume(50);
+	setSoundFileVolume(VOLUME);
 	playSoundFile("error.wav",SF_SIMPLE_PLAY);
 	waitSoundFileHasFinished();
 	set_led_state(ERROR_MODE);
@@ -217,7 +217,8 @@ void get_sequ(uint8_t *sequ_size_out, int8_t *sequ_out){
 
 
 /*
-*	Callback called when the demodulation of the four microphones is done.
+ * Comes from TP5
+*	Callback called when the demodulation of the microphone is done.
 *	We get 160 samples per mic every 10ms (16kHz)
 */
 void processAudioData(int16_t *data, uint16_t num_samples){
