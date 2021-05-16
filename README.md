@@ -15,3 +15,6 @@ Changer _lib\e-puck2_main-processor\src\sensors\VL53L0X\VL53L0X.c_ ligne 36  `VL
 ### Processing app
 >Le fichier Processing *path_generator.pde* est à ouvrir avec Processing.<br />
 >Prérequis : Android Mode, Sound Library, Android Studio
+
+### Web app (obsolète)
+https://editor.p5js.org/tgieruc/sketches/f2lFWcYWd
