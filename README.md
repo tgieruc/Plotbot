@@ -1,6 +1,9 @@
 # PLOTBOT
 ## Projet robotique BA6
 
+Ce projet a été conçu dans le cadre du cours "Systèmes embarqués et Robotique" à l'EPFL.
+
+Le rapport est disponible ici : [Rapport PDF](https://github.com/tgieruc/Plotbot-MTBA6/blob/main/G38_Rapport_Miniprojet_Plotbot.pdf).
 
 ### Instructions :
 * Placer le dossier *PLACE_NEXT_TO_lib* à coté du dossier lib de l'e-puck
