@@ -32,7 +32,7 @@ static THD_FUNCTION(CaptureImage, arg) {
     chRegSetThreadName(__FUNCTION__);
     (void)arg;
 
-	//Takes pixels 0 to IMAGE_BUFFER_SIZE of the line 10 + 11 (minimum 2 lines because reasons)
+	//Takes pixels 0 to IMAGE_BUFFER_SIZE of the line 10 + 11
 	po8030_advanced_config(FORMAT_RGB565, 0, 10, IMAGE_BUFFER_SIZE, 2, SUBSAMPLING_X1, SUBSAMPLING_X1);
 	dcmi_enable_double_buffering();
 	dcmi_set_capture_mode(CAPTURE_ONE_SHOT);
@@ -126,10 +126,10 @@ static void image_info (uint8_t image[],uint16_t *width, uint16_t *position){
 	for (int i=MARGIN ; i < IMAGE_BUFFER_SIZE-MARGIN; i++){
 			if (image[i]<threshold){
 				(tempwidth)++;
-				tempposition = i;//dernier pixel de la ligne
+				tempposition = i;//last pixel of the line
 			}
 			else if (tempwidth != 0){
-				if (tempwidth < FILTER){//filtre passe haut
+				if (tempwidth < FILTER){// highpass filter
 					tempwidth  = 0;
 				}else{
 					if(abs(tempposition-tempwidth/2 -IMAGE_BUFFER_SIZE/2) < abs(new_position-IMAGE_BUFFER_SIZE/2)){//prend la barre la plus au centre

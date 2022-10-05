@@ -11,7 +11,7 @@
 #include <audio/play_sound_file.h>
 #include <leds_animations.h>
 
-#define ANGLE2STEP 	3.6f//transform degrees into steps for the motors
+#define ANGLE2STEP 	3.6f //transform degrees into steps for the motors
 
 //****DIRECTIONS****
 #define NORTH 		0
@@ -35,7 +35,7 @@
 
 #define KP_TURN					0.3f
 #define KP_FORWARD 				1
-#define KI 						0.2f	//must not be zero
+#define KI 						0.2f	
 #define MAX_SUM_ERROR 			50
 
 #define MIDDLE_DCIM 320

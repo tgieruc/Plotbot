@@ -1,10 +1,3 @@
-/*
- * leds_animations.c
- *
- *  Created on: 2 mai 2021
- *      Author: guill
- *
- */
 #include <leds.h>
 #include <leds_animations.h>
 #include <chprintf.h>
